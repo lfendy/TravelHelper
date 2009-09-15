@@ -1,0 +1,507 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>                                                            <title>Flight Bookings - Confirmation</title> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <link rel="shortcut icon" href="https://book.qantas.com.au/pl/QFOnline/wds/CUI_QFO_V1.0_R14_81_120908/img/favicon.ico"> <style type="text/css"> <!-- @import url(CUI_QFO_V1.0_R14_81_120908/css/super.css); @import url(CUI_QFO_V1.0_R14_81_120908/css/qantasoverride.css); --> </style> <link href="OverrideServlet_files/print.css" rel="stylesheet" media="print" type="text/css"> <script language="JavaScript" src="OverrideServlet_files/WDSCore.js" type="text/javascript"></script> <script language="JavaScript" src="OverrideServlet_files/WDSToolTip.js" type="text/javascript"></script> <script language="JavaScript" src="OverrideServlet_files/COFDForm.js" type="text/javascript"></script> 
+
+
+<script language="javascript">
+
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.0", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.40", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.41", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.42", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.45", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.50", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.60", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.70", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.90", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.99", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.100", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.Error.110", "Qantas Frequent Flyers earn points on flights with Qantas, oneworld&reg; alliance and partner airlines.");
+
+
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.TiersLevel.CLQF", "Chairmans Lounge members");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.TiersLevel.FFBR", "Bronze Qantas Frequent Flyers");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.TiersLevel.FFGD", "Gold Qantas Frequent Flyers");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.TiersLevel.FFPL", "Platinum Qantas Frequent Flyers");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.TiersLevel.FFSL", "Silver Qantas Frequent Flyers");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.TiersLevel.QCBR", "Qantas Club Bronze members");
+
+WDSMessage.setMessage("ALLP.js.earnPointsConnector.TiersLevel.QCSL", "Qantas Club Silver members");
+
+/**
+* Init the COFD form.
+*/
+COFDForm.prototype.initForm = function () {
+if ( document.getElementById("idWaitContainer") ) {
+document.getElementById("idWaitContainer").style.display = "";
+}
+if ( document.getElementById("idEarnPointContainer") ) {
+document.getElementById("idEarnPointContainer").style.display = "none";
+}
+this.initEarnPointsConnector();
+var earnPointsRequest = this.createEarnPointsRequest();
+this.stockQuery = earnPointsRequest;
+this.runEarnPointsRequest(earnPointsRequest);
+// open connector settings
+this.earnPointsConnector.callBackMethodError("connectorCallBack( {	'requestId':this.earnPointsRequest_Id, 'error': { 'code':'0', 'blocking':false } } )" );
+this.earnPointsConnector.run();
+
+
+this.earnPointsHideErrors.push("51");
+
+this.earnPointsHideErrors.push("52");
+
+this.earnPointsHideErrors.push("53");
+
+}
+COFDForm.prototype.initTimeout = function () {
+// open connector settings
+this.earnPointsConnector.initTimeout(8000);
+}
+COFDForm.prototype.initEarnPointsConnector = function () {
+// Create earnPoints url request
+
+this.earnPointsConnectorUrl = "https://www.qantas.com.au/ffservices/do/dyns/getMilesQuote?TYPE=EARN&OFFICE_ID=SYDQF08AA&LANGUAGE=GB&NB_ADT=1&NB_CHD=0&NB_INF=0";
+}
+COFDForm.prototype.createEarnPointsRequest = function () {
+this.earnPointsRequest_Id ++;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+this.hasFFlyers = true;
+
+
+
+
+
+
+
+
+var mileageRequest = this.earnPointsConnectorUrl;
+mileageRequest += "&REQUEST_ID="+this.earnPointsRequest_Id;
+mileageRequest += "&SECTORS=SYD/MEL,MEL/SYD";
+mileageRequest += "&SEGMENT_ID=1,2";
+mileageRequest += "&FLIGHT_NUMBERS=409,444";
+mileageRequest += "&AIRLINE_CODES=QF,QF";
+mileageRequest += "&OPERATING_CODES=*,*";
+mileageRequest += "&NB_STOPS=0,0";
+mileageRequest += "&CLASSES=K,K";
+mileageRequest += "&FQTV_NUMBER_LIST=2040711";
+mileageRequest += "&DATES=011020080700/011020080830,031020081530/031020081650";
+return mileageRequest;
+}
+/**
+* Open email a fiend popup
+*/
+COFDForm.prototype.popupEmail = function (mode) {
+
+
+
+
+
+
+
+var url = "DisplayViewServlet;jsessionid=LYLhS6sP2FGxrJkd5B1W0nZ89LdZsdBPpssJcT0Qdvy8bsGzy1p3!-127608305!773060733?PAGE_TICKET=5&SITE=QFQFQFBD&LANGUAGE=GB&JSP_NAME_KEY=SITE_JSP_EMAIL_TO_FRIEND&FROM_PAGE=COFD&FROM=Dennise+Openshaw&EMAILFROM=oztravel%40thoughtworks.com";
+url += "&MODE=" + mode;
+WDSCommon.popSizedWinNoScroll(url, "419", "417");
+}
+/**
+* Open the add to calendar popup.
+*/
+COFDForm.prototype.popADDC = function () {
+
+WDSCommon.popSizedWin("DisplayTripPlanServlet;jsessionid=LYLhS6sP2FGxrJkd5B1W0nZ89LdZsdBPpssJcT0Qdvy8bsGzy1p3!-127608305!773060733?PAGE_TICKET=5&SITE=QFQFQFBD&LANGUAGE=GB&WDS_PAGE_CODE=ADDC", "470", "312");
+}
+/**
+* Open the Flight Info popup.
+*/
+COFDForm.prototype.popupFlightInfo = function (bDate,bLocation,eLocation, airlinecode, flightnumber,equipment, equipmentcode, duration) {
+
+var url = "FlifoInfoServlet;jsessionid=LYLhS6sP2FGxrJkd5B1W0nZ89LdZsdBPpssJcT0Qdvy8bsGzy1p3!-127608305!773060733?SITE=QFQFQFBD&LANGUAGE=GB";
+url += "&B_DATE="+bDate;
+url += "&B_LOCATION=" + bLocation;
+url += "&E_LOCATION=" + eLocation;
+url += "&AIRLINE_CODE=" + airlinecode;
+url += "&FLIGHT_NUMBER=" + flightnumber;
+url += "&EQUIPMENT=" + equipment;
+url += "&EQUIPMENT_CODE=" + equipmentcode;
+url += "&DURATION=" + duration;
+WDSCommon.popSizedWinNoScroll(url, "420", "560");
+}
+/**
+* Action call by the open connector
+* @param {json} object The JSon object response send by the open connector or the timeout error
+*/
+function connectorCallBack(object) {
+WDSTrace.dump(WDSJson.toString(object));
+if (theCOFDForm.earnPointsRequest_Id == Number(object.requestId)) {  // It s a correct response
+theCOFDForm.earnPointsConnector.stopTimeout();
+// Manage errors from the open connector
+if (object.error) {
+var hideEarnPanel = false;
+for (i=0;i<theCOFDForm.earnPointsHideErrors.length;i++){
+if (object.error.code == theCOFDForm.earnPointsHideErrors[i]){
+hideEarnPanel = true
+break;
+}
+}
+if (hideEarnPanel){
+document.getElementById("earnPointPanel").style.display = "none";
+}else{
+if ( document.getElementById("idWaitContainer") ) {
+document.getElementById("idWaitContainer").style.display = "none";
+}
+document.getElementById("idEarnPointError").innerHTML = WDSMessage.getMessage("ALLP.js.earnPointsConnector.Error."+object.error.code);
+document.getElementById("idEarnPointError").style.display = "";
+document.getElementById("idTermsAndConditions").style.display = "";
+}
+}else{
+// Display the results from the earnPointConnector and allows the customer to continu the booking
+var patternWithinFFlyer = "{0} could earn <strong>{1}</strong> points for this booking.";
+var patternWithoutFFlyer = "Qantas Frequent Flyers could earn <strong>{0}</strong> points for this booking.";
+var result = "";
+var tmp = "";
+var points = "";
+var ff = ""; // The current Frequent Flyer
+var id = ""; // id in the Array
+var milesPerTraveller = object.result.milesPerTraveller;
+var tiersLevelTab = new Array();
+var milesTab = new Array(); // Array where ;iles are referenced
+// Compute points by Frequent Flyers
+for (i=0;i<milesPerTraveller.length;i++){
+points = milesPerTraveller[i].miles;
+ff = milesPerTraveller[i].membership;
+id = theCOFDForm.findInTab(tiersLevelTab, ff);
+if (id == -1){// new Frequent Flyer
+tiersLevelTab.push(ff);
+milesTab.push(points);
+}
+}
+// Case when there is at least one Frequent Flyers
+// Display sentences with points for each Frequent Flyers represented in this PNR
+if (theCOFDForm.hasFFlyers){
+for (i=0;i<tiersLevelTab.length;i++){
+tmp = patternWithinFFlyer.replace("{0}", WDSMessage.getMessage("ALLP.js.earnPointsConnector.TiersLevel."+tiersLevelTab[i]));
+result += tmp.replace("{1}", theCOFDForm.addCommas(milesTab[i]));
+}
+}else{
+result = patternWithoutFFlyer.replace("{0}", theCOFDForm.addCommas(milesTab[0]));
+}
+if ( document.getElementById("idWaitContainer") ) {
+document.getElementById("idWaitContainer").style.display = "none";
+}
+if ( document.getElementById("idEarnPointContainer") ) {
+document.getElementById("idEarnPointContainer").style.display = "";
+document.getElementById("idEarnPointContainer").innerHTML = result;
+}
+if ( document.getElementById("idTermsAndConditions") ) {
+document.getElementById("idTermsAndConditions").style.display = "";
+}
+}
+}else{
+WDSTrace.dump("COFD earnPointConnector: no action could be handle cause of concurrent requests");
+}
+}
+</script> <script>var theCOFDForm = new COFDForm();</script> <script src="OverrideServlet_files/getMilesQuote" type="text/javascript" id="earnPointsRequestundefined"></script></head><body id="pageCONF" class="QF qantas"><div style="border: 5px dotted grey; margin: 10px; padding: 0px 20px 20px; background: white none repeat scroll 0% 0%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;" id="travelplanner"><style>#travelplanner h1 {font-family: verdana;font-size: 18px; margin: 0px; color: #E6E6FA; letter-spacing: 0.3em;}#travelplanner h2 {font-family: verdana; font-size: 20px; border-bottom: 2px solid #EEE8AA} #cars {background-color: #white} #cars h2 {background-color: white}#logo-vb {visibility: hidden}</style><div style="position: absolute;"><h1>travel planner</h1></div><div style="text-align: right;"><a onclick='s_objectID="https://book.qantas.com.au/pl/qfonline/wds/overrideservlethttps://book.qantas.com.au/pl/qfonline/wds/overrideservlet;jsessionid=lylhs6sp2fgxrjkd5b1w0nz89ldzsdbppssjct0qdvy8bsgzy1p3!-127608305!773060733#_1";if(this.s_oc)return this.s_oc(e);return true' href="#">send bug report</a></div><div id="contact"><h2>Contact Details for Dennise Openshaw </h2>mobile: <input size="12" id="mobileNo" value="0418 278 272"><br></div><div id="accommodation"><h2>Accommodation <span style="font-size: 10pt;"><a target="_blank" href="http://spreadsheets.google.com/ccc?key=pgZYLtdPRv50AK70fqJkQSw&amp;hl=en">change hotels</a> - <a onclick='s_objectID="https://book.qantas.com.au/pl/qfonline/wds/overrideservlethttps://book.qantas.com.au/pl/qfonline/wds/overrideservlet;jsessionid=lylhs6sp2fgxrjkd5b1w0nz89ldzsdbppssjct0qdvy8bsgzy1p3!-127608305!773060733#_2";if(this.s_oc)return this.s_oc(e);return true' href="#" id="accommodationHotelRefresh">refresh hotels</a></span></h2><div id="a1"><input name="city" value="Melbourne" type="hidden">from: <input name="checkIn" value="1 October 2008"><br>to: <input name="checkOut" value="3 October 2008"><br>at: <select name="hotel"><option value="Mantra&amp;471 Little Bourke Street&amp;+61396073000">Mantra</option><option value="Medina Grand&amp;189 Queen Street&amp;'+61399340000">Medina Grand</option><option value="Test 2&amp;blah road&amp;+61396073001">Test 2</option></select> <a id="callHotel" href="skype:+61396073000?call">call +61396073000</a><br>Room Type: <select name="roomType"><option>1 Bedroom</option><option>2 Bedroom</option><option>Studio</option></select><br>Rate: $<input name="rate" value="0.00"> per night - <select name="paid"><option value="false">not paid</option><option value="true">paid</option></select><br>Reservation No:<input name="reservationNo" value=""><br></div></div><div id="cars"><h2>Cars <span style="font-size: 10pt;"><a target="_blank" href="http://spreadsheets.google.com/ccc?key=pgZYLtdPRv51beYTHUIrFWg&amp;hl=en">change cars</a> - <a onclick='s_objectID="https://book.qantas.com.au/pl/qfonline/wds/overrideservlethttps://book.qantas.com.au/pl/qfonline/wds/overrideservlet;jsessionid=lylhs6sp2fgxrjkd5b1w0nz89ldzsdbppssjct0qdvy8bsgzy1p3!-127608305!773060733#_3";if(this.s_oc)return this.s_oc(e);return true' href="#" id="carsRefresh">refresh cars</a></span></h2><div id="c1"><input id="c1date" value="1222808400000" type="hidden">to <b name="to">Sydney Domestic Airport</b> from <input name="from" size="30" value=""> will take <input name="estimate" size="2" value="50"> minutes.&nbsp;<br></div><div id="c2"><input id="c2date" value="1222813800000" type="hidden">from <b name="from">Melbourne Domestic Airport</b> to <input name="to" size="30" value=""><br></div><div id="c3"><input id="c3date" value="1223011800000" type="hidden">to <b name="to">Melbourne Domestic Airport</b> from <input name="from" size="30" value=""> will take <input name="estimate" size="2" value="50"> minutes.&nbsp;<br></div><div id="c4"><input id="c4date" value="1223016600000" type="hidden">from <b name="from">Sydney Domestic Airport</b> to <input name="to" size="30" value=""><br></div>all cars before flights should arrive <input name="buffer" size="2" value="45"> minutes early to airports<br><span id="carlinks"><p style="margin: 4px;"><a href="skype:+61413333663?call" name="Sydney">call SAS Limos - Peter - 0413 333 663</a></p><p style="margin: 4px;"><a href="skype:+61412932628?call" name="Melbourne">call On Time - Ossie - 0412 932 628</a></p></span></div><div style="font-family: verdana; font-size: 10pt;" id="email"><h2>Itinerary</h2><b>Flight Booking Reference: </b>YM9U2N<br>---------------------------------------------------------------------<br>Travel Itinerary For:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="personname">Dennise Openshaw </span> <span id="emailMobileNo">(0418 278 272)</span><br>---------------------------------------------------------------------<br><div id="emailc1"></div><div id="emailf1"><b> Flight Time 07:00 Wednesday 1 October 2008</b><br>Flight No: Qantas Airlines                                 QF409  <br>Depart: 1 October 2008 07:00 - Sydney Domestic Airport<br>Arrive: 1 October 2008 08:30 - Melbourne Domestic Airport</div><br><div id="emailc2"></div><div id="emaila1"><b>Accommodation at Mantra</b><br>Address:471 Little Bourke Street<br>Check In: 1 October 2008<br>Check Out: 3 October 2008<br>Rate: $186.00 per night - Please pay on Departure<br>Reservation No: 00030313626<br><br></div><div id="emailc3"></div><div id="emailf2"><b> Flight Time 15:30 Friday 3 October 2008</b><br>Flight No: Qantas Airlines                                 QF444  <br>Depart: 3 October 2008 15:30 - Melbourne Domestic Airport<br>Arrive: 3 October 2008 16:50 - Sydney Domestic Airport</div><br><div id="emailc4"></div><div id="email?"></div><a href="http://www.qantas.com.au/regions/do/dyn/checkmytrip?bookingRef=YM9U2N&amp;surname=Openshaw">lookup your booking on the interwebs</a><br><br><div><p> For changes or cancellations <b>outside business hours</b> please contact airlines and drivers directly<br>via their website or the following numbers.</p></div><p><b>AIRLINES</b><br>Qantas 13 13 13<br>Virgin Blue 13 67 89</p><p><b>CAR SERVICES</b><br>Melbourne 0412 932 628<br>Sydney  0413 333 663<br>Brisbane 07 3325 2644</p><div><p>When travelling for ThoughtWorks you are covered by <a href="http://www.covermore.com.au/">CoverMore Travel Insurance</a><br>Account Name:ThoughtWorks Australia Pty Ltd<br>Policy Number:5356272</p></div><div><p><b>Got Feedback?</b> How was your travel today? Were the timings appropriate? Did everything go smoothly?<br>Please let Jacqui know of any feedback you have to help us provide the best travel service we can.</p></div></div><div style="font-family: verdana; font-size: 10pt;" id="spreadsheet"><h2>Spreadsheet</h2><table id="spreadsheetTable" border="1" cellpadding="0" cellspacing="0"></table><br></div></div> 
+
+
+
+
+
+	
+	
+
+	
+		
+	
+	
+
+
+
+
+
+
+
+
+
+
+	
+		
+			
+				
+				
+			
+			
+		
+	
+	
+
+
+<script language="JavaScript" type="text/javascript" defer="defer">
+
+<!--
+
+var dd = new Date();
+
+var ord = Math.round(Math.abs(Math.sin(dd.getTime()))*1000000000)%10000000;
+
+var adsfac_image = new Image(1,1);
+
+adsfac_image.src = 'http://adsfac.net/pct_mx.asp?L=10139&ref='+escape(top.document.referrer)+'&url='+escape(top.document.URL)+'&ord='+ord+'&ta=645.7&udp1=SYD,MEL,MEL,SYD';
+
+-->
+
+</script>
+
+<noscript>
+<p>
+<img alt="" width="1" height="1" src="http://adsfac.net/pct_mx.asp?L=10139&amp;ord=1&amp;ta=645.7&amp;udp1=SYD,MEL,MEL,SYD" />
+</p>
+</noscript> <div id="container"> <div id="wrapper" class="">                 <div id="header" class="default"> <a href="http://www.qantas.com/" title="Qantas Home" class="home" target="_self"></a>  </div> <div id="subWrapper"> <div id="progress">    <ul> <li class="startBeen">1. search</li> <li class="been">2. select flights</li> <li class="been">3. review</li> <li class="been">4. passengers</li> <li class="been">5. payment</li> <li class="endSelect">6. confirmation</li> </ul>   <p class="clear"><spacer></p> </div> <div id="content"> <div id="tools">    <div id="pmPanel"><div><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" width="130" align="top" height="140"><param id="moomoo" name="MOVIE" value="http://www.qantas.com.au/flash/pm/eTravel/carbonCalculator/etravel_pm_carbon_130_140.swf?slotId=pmPanel&amp;recloc=&amp;dep=SYD,MEL&amp;arr=MEL,SYD&amp;depCny=AU&amp;arrCny=AU&amp;flightNumber=&amp;depDate=200810010700,200810031530&amp;arrDate=200810010830,200810031650&amp;officeID=&amp;paxNumbers=&amp;cardType=A&amp;serverDate=20080923161704&amp;promoSlotName=COFD&amp;dest=1,1?theLink=http://www.qantas.com.au/info/flying/flyCarbonNeutral/index&amp;theTarget=blank"><param name="PLAY" value="true"><param name="LOOP" value="true"><param name="QUALITY" value="high"><param name="MENU" value="false"><param name="scale" value="exactfit"><param name="wmode" value="opaque"><embed src="OverrideServlet_files/etravel_pm_carbon_130_140.swf" play="true" wmode="opaque" loop="true" quality="high" scale="exactfit" menu="false" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" width="130" align="top" height="140"></object><br></div><div><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" width="130" align="image only" height="154"><param id="moomoo" name="MOVIE" value="http://www.qantas.com.au/flash/pm/eTravel/hotelPm/dom/domHotelPm_live.swf?slotId=pmPanel&amp;recloc=&amp;dep=SYD,MEL&amp;arr=MEL,SYD&amp;depCny=AU&amp;arrCny=AU&amp;flightNumber=&amp;depDate=200810010700,200810031530&amp;arrDate=200810010830,200810031650&amp;officeID=&amp;paxNumbers=&amp;cardType=A&amp;serverDate=20080923161704&amp;promoSlotName=COFD&amp;dest=1,1?theLink=http://www.qantas.com.au/info/bookings/hotels?int_cam=rrEtravelHotGen&amp;theTarget=blank"><param name="PLAY" value="true"><param name="LOOP" value="true"><param name="QUALITY" value="high"><param name="MENU" value="false"><param name="scale" value="exactfit"><param name="wmode" value="opaque"><embed src="OverrideServlet_files/domHotelPm_live.swf" play="true" wmode="opaque" loop="true" quality="high" scale="exactfit" menu="false" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" width="130" align="image only" height="154"></object></div><div><a href="http://www.qantas.com.au/info/bookings/onlineCheckin" target="blank"><img src="OverrideServlet_files/img_etravel_checkin_130.jpg" style="" alt="Online check-in"></a><br> <a href="http://www.qantas.com.au/info/bookings/onlineCheckin" target="blank">available</a>  24 hours before your flight. </div><div><a href="https://www.qantas.com.au/fflyer/dyns/joinff" target="blank"><img src="OverrideServlet_files/img_hdr_joinff.gif" style="" alt="Join Frequent Flyer"></a><br>and  <a href="https://www.qantas.com.au/fflyer/dyns/joinff" target="blank">earn points</a>  on this flight.</div><div><a href="http://www.qantas.com.au/info/bookings/travelInsurance/index" target="blank"><img src="OverrideServlet_files/img_hdr_travelinsurance.gif" style="" alt="Travel Insurance"></a><br> <a href="http://www.qantas.com.au/info/bookings/travelInsurance/index" target="blank">Purchase QBE policies</a>  and Frequent Flyers earn points.</div><div><a href="http://www.qantas.com.au/info/bookings/cars" target="blank"><img src="OverrideServlet_files/img_etravel_cars_130.jpg" style="" alt="Book a car"></a><br> <a href="http://www.qantas.com.au/info/bookings/cars" target="blank">Book a car online</a> </div></div>   </div> <div id="title"> <a href="javascript:void(null);" onclick="javascript:void WDSCommon.popSizedWin('http://www.qantas.com.au/info/bookings/help/domesticNFS/confirmation', 666, 450);" class="right help" title="Help">Help</a> <h1>    Step 6 -    Confirmation </h1>       <div id="WDSError" style="display: none;"> <div id="WDSErrorContainer">&nbsp;</div> </div> <script language="javascript" type="text/javascript"> WDSMessage.setMessage("WDSError.HeaderMessage", "Please review the following items"); WDSMessage.setMessage("WDSCheck.EmailError",    "Please check your mail"); WDSMessage.setMessage("WDSCheck.CNumberError",  "The phone number entered within the passenger contact details section is not valid. Please check your entry and try again."); WDSMessage.setMessage("WDSCheck.MNumberError",  "Mobile phone number should be numeric or +-()."); WDSMessage.setMessage("WDSCheck.FNumberError",  "Fax phone number should be numeric or +-()."); function WDSObjectError_modifySrcElement () { var errorTag = document.getElementById("error" + this.object.name); if (errorTag != null) { errorTag.className="error"; } } function WDSObjectError_initSrcElement () { var errorTag = document.getElementById("error" + this.object.name); if (errorTag != null) { errorTag.className=""; } } WDSError.init(); WDSError.linkObject = false; WDSError.autoResizeAndCenter = true; WDSError.setTitle(WDSMessage.getMessage("WDSError.HeaderMessage"));       if (WDSError.hasError()) { WDSError.show(); } </script>                <p class="clear"><spacer></p> <br>  <a href="javascript:theCOFDForm.popADDC();" class="right infoT">Add to calendar</a> <a href="javascript:window.print();" class="right print">Print itinerary</a> <a href="javascript:theCOFDForm.popupEmail('SEND');" class="right email">E-mail a friend</a>  <h2>    Booking Reference:<em id="recordlocator" class="">YM9U2N</em>   </h2>                                   <p class="clear tweak"> This confirmation page is not a travel document. An <strong>e-ticket</strong> itinerary receipt will be sent to <strong>oztravel@thoughtworks.com</strong> once your ticket(s) are issued.  </p>        </div> <div id="centrePanel"> <form action="COFD_FORM"> <div id="business">                                            <div class="paxRecap"> <h2>Passenger Details</h2> <div class="panel"> <div class="left"> <table cellspacing="0"> <tbody><tr> <th>Name</th> <th>Frequent Flyer No.</th> </tr>                                          <tr> <td class="compactor ToggleOn" id="paxMeal1link">  <a href="javascript:theCOFDForm.toggle('paxMeal1');javascript:theCOFDForm.toggle('paxMeal1link');"> Mrs Dennise Openshaw </a>   </td> <td>        QF 2040711&nbsp; </td> </tr>  <tr class="ToggleOn" id="paxMeal1"> <td colspan="2" class="pref">    Seat Preference: Aisle<br>     </td> </tr>         </tbody></table> </div> <div class="right"> <table cellspacing="0"> <tbody><tr> <th colspan="2">Booking Contact</th> </tr> <tr> <td colspan="2">    <strong> Mrs Dennise Openshaw </strong>   </td> </tr>  <tr> <td>Daytime phone:</td> <td>0418 278 272</td> </tr>   <tr> <td>Evening phone:</td> <td>0418 278 272</td> </tr>     <tr> <td colspan="2">E-mail: oztravel@thoughtworks.com</td> </tr>  </tbody></table> </div> <br class="clear"> </div> <p class="clear"><spacer></p> </div>        <div class="flightsRecap"> <h2>Your Itinerary</h2> <div> <table class="full" cellspacing="0">     <tbody><tr>    <th colspan="1" class="">      <em>Flight Out:</em>     </th>  <th colspan="2">From</th> <th colspan="2">To</th> <th>Flight</th> <th>Departure<br>Terminal</th> <th><a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/attheairport/checkintimes',666,450);_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/atTheAirport/checkinTimes',666,450);">Check-in<br>Closes</a></th> <th><a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/beforeyoutravel/baggagechecked',666,450)_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/beforeYouTravel/baggageChecked',666,450)">Checked<br> Baggage</a></th>  </tr>    <tr> <td>Wed 1 Oct 08</td> <td>  <strong>07:00</strong>   </td> <td> Sydney </td> <td>  <strong>08:30</strong>      </td> <td> Melbourne </td> <td>                               <a href="javascript:void(null)" onclick="javascript:theCOFDForm.popupFlightInfo('200810010700','SYD','MEL','QF', '409','Boeing 767-300/300ER','763','0');" class="logo qf" title=""> QF409 </a> </td> <td class="aligncenter">  3 </td> <td class="checkin">                                  30 minutes before departure      </td> <td class="baggage">                  1 piece<br> <a href="javascript:void(null)" onclick="theBABRpopup.show(event, 1);">Details</a>       </td> </tr>                <tr> <td id="travelInfo1_1a" class="compactor ToggleOn"> <a href="javascript:theCOFDForm.toggle('travelInfo1_1a');javascript:theCOFDForm.toggle('travelInfo1_1b');">More flight info</a> </td>    </tr> <tr id="travelInfo1_1b" class="flightInfo ToggleOn"> <td colspan="9">  <div id="fiRightCompactor1_1" class="right" style="height: 100%;"> <div style="height: 100%;">   <a onclick="s_objectID=&quot;cityname=melbourne','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/regions/dyn/weatherPopup?CityCode=MEL&amp;CityName=Melbourne','650','450');" class="weather" title="Weather">Weather</a>        <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/attheairport/airportguide/meldom','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/atTheAirport/airportGuide/melDom','650','450');" class="airport" title="Airport Info">Airport Info</a>  <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/intheair/entertainment/main/domestic/index','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/inTheAir/entertainment/main/domestic/index','650','450');" class="inflight" title="Inflight Entertainment">Inflight Entertainment</a>  </div> <div style="height: 100%;">    <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/travelcontent/dyn/destinationguide/melbourne','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/travelcontent/dyn/destinationGuide/melbourne','650','450');" class="guides" title="Destination Guides">Destination Guides</a>  <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/beforeyoutravel/baggagecarryon','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/beforeYouTravel/baggageCarryOn','650','450');" class="baggage" title="Baggage">Baggage</a>   </div> </div>      <div id="fiLeftCompactor1_1" class="left" style="height: 100%;">   <p> <b>Status:</b> Confirmed </p>  <p>      <b>Class:</b> <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/travelclasses/domesticeconomy','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/travelClasses/domesticEconomy','650','450');">Economy</a>&nbsp;(K)      </p> <p>  <strong>Flight Duration:</strong>&nbsp;  1h 30m  </p>  <p>   <a href="http://www.qantas.com.au/info/flying/atTheAirport/quickCheck" target="_blank">QuickCheck</a> available at this airport  </p>       </div> </td> </tr>     <tr>       <th colspan="9" class="height2">       <em>Flight Back:</em>    </th>  </tr>    <tr> <td>Fri 3 Oct 08</td> <td>  <strong>15:30</strong>   </td> <td> Melbourne </td> <td>  <strong>16:50</strong>      </td> <td> Sydney </td> <td>                               <a href="javascript:void(null)" onclick="javascript:theCOFDForm.popupFlightInfo('200810031530','MEL','SYD','QF', '444','Boeing 767-300/300ER','763','0');" class="logo qf" title=""> QF444 </a> </td> <td class="aligncenter">  1 </td> <td class="checkin">                                  30 minutes before departure      </td> <td class="baggage">                    1 piece<br> <a href="javascript:void(null)" onclick="theBABRpopup.show(event, 2);">Details</a>     </td> </tr>               <tr> <td id="travelInfo2_1a" class="compactor ToggleOff"> <a href="javascript:theCOFDForm.toggle('travelInfo2_1a');javascript:theCOFDForm.toggle('travelInfo2_1b');">More flight info</a> </td>    </tr> <tr id="travelInfo2_1b" class="flightInfo ToggleOff"> <td colspan="9">  <div id="fiRightCompactor2_1" class="right" style="height: 100%;"> <div style="height: 100%;">   <a onclick="s_objectID=&quot;cityname=sydney','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/regions/dyn/weatherPopup?CityCode=SYD&amp;CityName=Sydney','650','450');" class="weather" title="Weather">Weather</a>        <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/attheairport/airportguide/syddomt3','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/atTheAirport/airportGuide/sydDomT3','650','450');" class="airport" title="Airport Info">Airport Info</a>  <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/intheair/entertainment/main/domestic/index','650','450');_2&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/inTheAir/entertainment/main/domestic/index','650','450');" class="inflight" title="Inflight Entertainment">Inflight Entertainment</a>  </div> <div style="height: 100%;">    <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/travelcontent/dyn/destinationguide/sydney','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/travelcontent/dyn/destinationGuide/sydney','650','450');" class="guides" title="Destination Guides">Destination Guides</a>  <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/beforeyoutravel/baggagecarryon','650','450');_2&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/beforeYouTravel/baggageCarryOn','650','450');" class="baggage" title="Baggage">Baggage</a>   </div> </div>      <div id="fiLeftCompactor2_1" class="left" style="height: 100%;">   <p> <b>Status:</b> Confirmed </p>  <p>      <b>Class:</b> <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/travelclasses/domesticeconomy','650','450');_2&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/travelClasses/domesticEconomy','650','450');">Economy</a>&nbsp;(K)      </p> <p>  <strong>Flight Duration:</strong>&nbsp;  1h 20m  </p>  <p>   <a href="http://www.qantas.com.au/info/flying/atTheAirport/quickCheck" target="_blank">QuickCheck</a> available at this airport  </p>       </div> </td> </tr>    </tbody></table> </div> <p class="clear"><spacer></p> </div>        <p class="legend note"> <strong>Key:</strong><span>  <span><img src="OverrideServlet_files/i_tail_red.gif">&nbsp;= Qantas flight&nbsp;</span>         </span></p> <p class="note smaller"> <strong>Note:</strong> <span>    Qantas flights <strong>QF1 - QF399</strong> depart from International Terminals. All other Qantas flights depart from Domestic Terminals.   </span>  <br class="clear"> </p>                                                           <div id="price"> <h2>Total Price</h2> <div class="format price"> <table cellspacing="0">         <tbody><tr class="head"> <td class="nopad" nowrap="nowrap"><a href="javascript:theCOFDForm.toggle('fares2');theCOFDForm.toggle('faresarrow2');" class="ToggleOn" id="faresarrow2"><img src="OverrideServlet_files/arrow_collapse.gif" class="on"><img src="OverrideServlet_files/arrow_expand.gif" class="off"></a></td> <td nowrap="nowrap">Total Price</td> <td> = </td> <td class="alignright" nowrap="nowrap">    $645.70   </td> <td class="normal" nowrap="nowrap">  (AUD)   </td>  <td width="30">&nbsp;</td> <td nowrap="nowrap">Payment Summary</td> </tr> </tbody><tbody id="fares2" class="ToggleOn">    <tr> <td>&nbsp;</td> <td nowrap="nowrap"> 1   adult     x $506.76  </td> <td> = </td> <td class="alignright" nowrap="nowrap">$506.76</td> <td>&nbsp;</td>  <td>&nbsp; </td> <td nowrap="nowrap">  AMERICAN EXPRESS: XXXX-XXXX-XXXX-1009   </td> </tr>    <tr> <td>&nbsp;</td> <td>Charges/taxes</td> <td>=</td> <td class="alignright">       $73.24 </td> <td>*</td> <td>&nbsp;</td>  <td>&nbsp;</td> </tr>  <tr> <td>&nbsp;</td> <td>GST</td> <td>=</td> <td class="alignright">             $58.70 </td> <td>&nbsp;</td>  <td>&nbsp;</td> <td>&nbsp;</td> </tr>   <tr> <td>&nbsp;</td> <td>Credit Card Fee</td> <td>=</td> <td class="alignright"> $7.00 </td> <td>&nbsp;</td>  <td>&nbsp;</td> <td>&nbsp;</td> </tr>    </tbody>   </table> </div> <div class="smaller">* Excludes local airport taxes collected at the time of check-in.</div>  </div>      <div id="earnPointPanel"> <h2>Frequent Flyer points earned</h2> <div class="format someheight"> <div id="idWaitContainer" style="display: none;"><img src="OverrideServlet_files/ani_waitimage.gif"></div> <div id="idEarnPointContainer" style="">Gold Qantas Frequent Flyers could earn <strong>2,000</strong> points for this booking.</div> <div id="idEarnPointError" style="display: none;"></div> </div> <p id="idTermsAndConditions" style=""> <a href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/fflyer/dyn/program/terms',600,650)">Terms and conditions apply</a> </p> </div>                                                                                                       <div> <h2>Flight Conditions</h2>   <div class="format">                      <div class="format4"> <a onclick="s_objectID=&quot;javascript:thecofdform.toggle('farecondlinkauauflex');thecofdform.toggle('farecondauauflex');thecofdform.toggle('fareiconauauflex');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:theCOFDForm.toggle('farecondlinkAUAUFLEX');theCOFDForm.toggle('farecondAUAUFLEX');theCOFDForm.toggle('fareiconAUAUFLEX');" class="topshift ToggleOff" id="fareiconAUAUFLEX"><img src="OverrideServlet_files/arrow_collapse.gif" class="on"><img src="OverrideServlet_files/arrow_expand.gif" class="off"></a> Flight Out and Back: <a onclick="s_objectID=&quot;javascript:thecofdform.toggle('farecondlinkauauflex');thecofdform.toggle('farecondauauflex');thecofdform.toggle('fareiconauauflex');_2&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:theCOFDForm.toggle('farecondlinkAUAUFLEX');theCOFDForm.toggle('farecondAUAUFLEX');theCOFDForm.toggle('fareiconAUAUFLEX');" class="ToggleOn" id="farecondlinkAUAUFLEX">Flexi Saver</a>   </div> <div id="farecondAUAUFLEX" class="ToggleOff terms"> <table cellspacing="0">  <script src="OverrideServlet_files/AUAUFLEX.js" type="text/JavaScript"></script><tbody><tr>
+<td width="10" height="25"><strong><img src="OverrideServlet_files/spacer.gif" width="10"></strong></td>
+<td width="125"></td>
+<td width="10"><strong><img src="OverrideServlet_files/spacer.gif" width="20"></strong></td>
+<td width="580"> </td>
+<td width="10"> </td>
+</tr>
+<tr>
+<td height="20"> </td>
+<td class="sideText" valign="top" width="125">Travel Class</td>
+<td> </td>
+<td class="sideText" width="580"><ul><li>Economy</li></ul></td>
+<td> </td>
+</tr>
+<tr>
+<td height="20"> </td>
+<td class="sideText" valign="top" width="125">Booking Changes</td>
+<td> </td>
+<td class="sideText" width="580"><ul><li>Changes can be made online at qantas.com/yourbooking, otherwise call <strong>13 13 13</strong>. <ul><li>Exception: For changes to combined Qantas and Jetstar bookings, and to multi-city bookings call <strong>13 13 13</strong>.</li></ul></li><li>For changes made over the phone, you will have to pay the&nbsp;<a href="javascript:void(null)" onclick="javascript:window.open('http://www.qantas.com.au/regions/dyn/amadeus/minirules/AUAURED_SUMMARY','WinPopup0','width=666,height=400,resizable=no,scrollbars=yes').focus()">service fee</a>&nbsp;applicable as&nbsp;at the&nbsp;date of the&nbsp;change.</li><li>Your
+original fare may be used as credit towards the payment of a new fare
+of equal or higher value, provided the new fare conditions are met.</li><li>At the time of making the change you must pay:<ul><li>the <a href="javascript:void(null)" onclick="javascript:window.open('http://www.qantas.com.au/regions/dyn/amadeus/minirules/AUAUSUPSAV_SUMMARY','WinPopup1','width=666,height=400,resizable=no,scrollbars=yes').focus()">change fee</a> &nbsp;applicable as at the date of the change</li><li>for changes made over the phone, the <a href="javascript:void(null)" onclick="javascript:window.open('http://www.qantas.com.au/regions/dyn/amadeus/minirules/AUAURED_SUMMARY','WinPopup2','width=666,height=400,resizable=no,scrollbars=yes').focus()">service fee</a> &nbsp;applicable as at the date of the change</li><li>any difference between the fare for your new booking and the original fare<ul><li>once your booking is made the current change fee and service fee can be viewed anytime at qantas.com/your booking</li></ul></li></ul></li><li>Your
+new booking must be for travel anywhere on the Qantas network within 12
+months of the date that the original ticket was issued.</li></ul></td>
+<td> </td>
+</tr>
+<tr>
+<td height="20"> </td>
+<td class="sideText" valign="top" width="125">Name Changes</td>
+<td> </td>
+<td class="sideText" width="580"><ul><li>Not permitted</li></ul></td>
+<td> </td>
+</tr>
+<tr>
+<td height="20"> </td>
+<td class="sideText" valign="top" width="125">Cancellations (including no show)</td>
+<td> </td>
+<td class="sideText" width="580"><ul><li><strong>Before the&nbsp;scheduled departure time:</strong> <ul><li>Re-booking - see 'Booking Changes' above. <ul><li>Ticket
+value can be used towards payment for a new booking for travel anywhere
+on the Qantas network within 12 months of the date that the original
+ticket was issued.</li></ul></li><li>No refund.</li></ul></li><li><strong>After the scheduled departure time (including no show):</strong> <ul><li>Not permitted. Loss of fare.</li></ul></li></ul></td>
+<td> </td>
+</tr>
+<tr>
+<td height="20"> </td>
+<td class="sideText" valign="top" width="125">Children / Infants</td>
+<td> </td>
+<td class="sideText" width="580"><ul><li>Infants (under 2 years) without a seat travel free of charge.</li><li>Discounts
+apply for infants (under 2 years) with a seat and children (2 to 11
+years). Discounts are based on the fare type and the fare amount
+(excluding surcharges, fees and taxes) paid by the adult travelling,
+plus any surcharges, fees and taxes that apply. The exact total will be
+quoted once you have selected your flights.</li><li>Infants must be accompanied, with a maximum of one infant per adult travelling.</li></ul></td>
+<td> </td>
+</tr>
+<tr>
+<td height="20"> </td>
+<td class="sideText" valign="top" width="125">Qantas Frequent Flyer </td>
+<td> </td>
+<td class="sideText" width="580"><ul><li>Points and Status Credits are
+not earned when travelling on Qantas Any Seat Awards. Classed
+as&nbsp;Economy when Status Credits are earned on this fare or this
+fare is eligible for Flight Upgrade Awards.</li><li>Flight Upgrade Awards are eligible on this fare except if this is a Qantas Any Seat Award.</li><li>Minimum 1,000 Frequent Flyer points, when points are earned on this fare.</li></ul></td>
+<td> </td>
+</tr>
+<tr>
+<td height="20"> </td>
+<td class="sideText" valign="top" width="125">Other Information</td>
+<td> </td>
+<td class="sideText" width="580"><ul><li>A booking fee of $27.50 per
+passenger will apply for bookings made through Qantas Telephone Sales,
+Airports and Qantas Travel outlets.</li></ul></td>
+<td> </td>
+</tr>
+<tr>
+<td colspan="5" height="20"></td>
+</tr>
+ </tbody></table> </div>       <p class="blank">  <a onclick="s_objectID=&quot;javascript:void%20wdscommon.popsizedwin('http://www.qantas.com.au/info/flying/beforeyoutravel/conditionscarriage','650','450');_1&quot;;if(this.s_oc)return this.s_oc(e);return true" href="javascript:void%20WDSCommon.popSizedWin('http://www.qantas.com.au/info/flying/beforeYouTravel/conditionsCarriage','650','450');">Terms &amp; Conditions of Carriage</a> </p>   </div> </div>                                          <div> <h2>Important Information</h2> <div class="format"> <ul>      <li>View your booking <strong>YM9U2N</strong> at <a onclick='s_objectID="direct_retrieve_lastname=openshaw&amp;site=qfqfqfsd&amp;booking_flow=servicing&amp;language=gb&amp;skin=p_1";if(this.s_oc)return this.s_oc(e);return true' href="https://book.qantas.com.au/pl/QFServicing/wds/OverrideServlet?EMBEDDED_TRANSACTION=RetrievePNRServlet&amp;ACTION=MODIFY&amp;DIRECT_RETRIEVE=TRUE&amp;PROVIDER=1A&amp;REC_LOC=YM9U2N&amp;DIRECT_RETRIEVE_LASTNAME=Openshaw&amp;SITE=QFQFQFSD&amp;BOOKING_FLOW=SERVICING&amp;LANGUAGE=GB&amp;SKIN=P">qantas.com/yourbooking</a>.</li> <li><strong>Changes</strong> can be made online at <a onclick='s_objectID="direct_retrieve_lastname=openshaw&amp;site=qfqfqfsd&amp;booking_flow=servicing&amp;language=gb&amp;skin=p_2";if(this.s_oc)return this.s_oc(e);return true' href="https://book.qantas.com.au/pl/QFServicing/wds/OverrideServlet?EMBEDDED_TRANSACTION=RetrievePNRServlet&amp;ACTION=MODIFY&amp;DIRECT_RETRIEVE=TRUE&amp;PROVIDER=1A&amp;REC_LOC=YM9U2N&amp;DIRECT_RETRIEVE_LASTNAME=Openshaw&amp;SITE=QFQFQFSD&amp;BOOKING_FLOW=SERVICING&amp;LANGUAGE=GB&amp;SKIN=P">qantas.com/yourbooking</a>.</li> <li><strong>Flight Updates</strong><br> - Your e-mail <strong>oztravel@thoughtworks.com</strong> may be used to contact you up to 3 days before your first flight out.  </li> <li>To add <strong>special requests</strong>, at the end of your booking:<br> - For travel with pets call your local <a href="http://www.qantas.com.au/needhelp/dyn/contacts/teleSalesContacts" target="blank">Qantas office</a>.<br> - If you have a disability or need special assistance call your local <a href="http://www.qantas.com.au/needhelp/dyn/contacts/teleSalesContacts" target="blank">Qantas office</a> or send an e-mail to <a href="mailto:telesales@qantas.com.au">telesales@qantas.com.au</a>. </li> <li><a href="http://www.qantas.com.au/info/flying/beforeYouTravel/travelDocuments" target="blank">Travel requirements</a>
+- Photo identification is required for check-in on all flights. For
+domestic flights departing from an international terminal, an
+Australian motor vehicle drivers licence or national passport is
+required.</li>           </ul> </div> </div> </div> <div id="buttons"> <input name="payment" value="Make Another Booking" class="button" onmouseover="this.className='hover'" onmouseout="this.className='button'" onclick="javascript:theFacade.submitNewSearch();" type="button"> <input name="payment" value="Qantas Home" class="button" onmouseover="this.className='hover'" onmouseout="this.className='button'" onclick="javascript:window.location='http://www.qantas.com'" type="button"> <input name="payment" value="Manage Your Booking" class="button" onmouseover="this.className='hover'" onmouseout="this.className='button'" onclick="javascript:window.location='/pl/QFServicing/wds/OverrideServlet?EMBEDDED_TRANSACTION=RetrievePNRServlet&amp;ACTION=MODIFY&amp;DIRECT_RETRIEVE=TRUE&amp;PROVIDER=1A&amp;REC_LOC=YM9U2N&amp;DIRECT_RETRIEVE_LASTNAME=Openshaw&amp;SITE=QFQFQFSD&amp;BOOKING_FLOW=SERVICING&amp;LANGUAGE=GB&amp;SKIN=P'" type="button"> <p class="clear"><spacer></p> </div> </form> </div> <p class="clear"><spacer></p> </div> </div>     <div id="bottom">     <div id="footer"> <ul> <li><a href="javascript:void%20WDSCommon.popWin('http://www.qantas.com.au/needhelp/dyn/contacts/internet');">Contacts</a> |</li> <li><a href="javascript:void%20WDSCommon.popWin('http://www.qantas.com.au/info/privacy');">Privacy &amp; Security</a>&nbsp;|</li> <li><a href="javascript:void%20WDSCommon.popWin('http://www.qantas.com.au/info/termsOfUse');">Terms of Use</a>&nbsp;|</li> <li><a href="javascript:void%20WDSCommon.popWin('http://www.qantas.com.au/info/viewing');">Viewing Tips</a>&nbsp;|</li> <li class="end"><a href="http://www.qantas.com/">Qantas Home</a></li> </ul> </div> <div id="copyright"> ©&nbsp;Qantas Airways Limited ABN 16 009 661 901 </div>   <p class="clear"><br></p> </div>  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- SiteCatalyst code version: H.1.
+Copyright 1997-2005 Omniture, Inc. More info available at
+http://www.omniture.com -->
+
+<script language="JavaScript" type="text/JavaScript">
+var _path="//www.qantas.com.au/js/sitecatalyst.js";
+var _js=('<sc'+'ript language="JavaScript" src="'+_path+'"></scr'+'ipt>');
+document.write(_js);
+</script><script language="JavaScript" src="OverrideServlet_files/sitecatalyst.js"></script><img src="OverrideServlet_files/s25828899366186.gif" name="s_i_qantascom" alt="" width="1" border="0" height="1">
+<script language="JavaScript"><!--
+/* You may give each page an identifying name, server, and channel on the next lines. */
+
+
+s.pageName=""
+s.server=""
+s.channel=""
+s.pageType=""
+s.prop1=""
+s.prop2=""
+s.prop3=""
+s.prop4=""
+s.prop5=""
+/* s.prop7 is set to document.title by Shub on 04.11.05 */
+s.prop7=document.title;
+/* E-commerce Variables */
+s.campaign=""
+s.state=""
+s.zip=""
+
+
+/* TCS chages for Bookingpace for leadtime in Confirmation tab Start - 18.04.2008 */
+
+
+s.eVar41="8";
+/* TCS chages for Bookingpace for leadtime in Confirmation tab Ends - 18.04.2008*/
+/* Custom variable & Time stamp for booking engine confirmation page - Shub 12.04.06 */
+bookRef_s="YM9U2N"
+ct_s = new Date();
+dt_s = ct_s.getDate();
+mth_s = ct_s.getMonth();
+mth_s = ++mth_s;
+yr_s = ct_s.getYear();
+/*Added s.products - V1.7 Andrew/shub 14.06.06 */
+s.currencyCode="AUD"
+/*s.events added with event5 and value of purchaseID V1.8 -Andrew/Shub 03/08/06 */
+s.events="purchase,event5:"+ (dt_s + "" + mth_s + "" + yr_s + bookRef_s);
+/*Added s.products - V1.7 Andrew/shub 14.06.06 */
+revenue_s="506.76"
+s.products=";;1;" + revenue_s
+s.purchaseID=(dt_s + "" + mth_s + "" + yr_s + bookRef_s);
+
+
+
+s.eVar1=""
+s.eVar2=""
+s.eVar3=""
+s.eVar4=""
+s.eVar5=""
+/************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+var s_code=s.t();if(s_code)document.write(s_code)//--></script>
+<script language="JavaScript"><!--
+if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+//--></script>
+<!-- End SiteCatalyst code version: H.1. --> </div> </div> <script> theCOFDForm.initForm(); </script>             <form name="SELECT_FLIGHT" action="OverrideServlet;jsessionid=LYLhS6sP2FGxrJkd5B1W0nZ89LdZsdBPpssJcT0Qdvy8bsGzy1p3!-127608305!773060733" method="post"> <input name="ENC" value="566B5FB0D6B97D1A404DC2C9379B4407C46DF203EB04D2D097829677659D13C231BD6DD1BDB929971512F7238A0E4EFBE5737CB09C2225E07D6FD6ECC6CDECE48EFD77BF4998CF58294547503AC1287779B49140211133B07BD490381B94AA3D1864BD1AE535CD54AD6EADD292CFDB6E2A5CDD4068AF9F0C53115614EA08B0F220D110573C1D772A1A3E271A74350DA3C3CCBD41FE1C8BE1F9146ED7576B383776C93F2B3A06E6C034A249C79E636399C648786C63428A49B2AF023BCAA32653E35D230F50F89DB26BC0567A87CD9487AC0242B070DB12C9EE605F8E3EB25244173C5AEBDFCA33B9FC5257908FC2F525FD9064BC62068761D3E1A1C410FF866F773F516176A8A6DD8B66EE9685EAA190E9FE25C7CD9409F839209728A44FD7DA40B119532DCD25229EC999427971D62EB733C2B204F91C05026E53A89B96DAA192D6DA438C309C0034C1F8FB5C9167A079ABCA72C8CDE0BF8347C3286E6880AD5977C1AC73E315041F2A077434536CCA5659C056D1192D43EDB26FAD0190608C1DB0CC0A61C12A0DE68C61E9559A9F38C8B80D30AB1B3FFF27D2DA527D3390240FC31F45C4D772D8E2E86763B2934467B4EA947A4278DDD8713B4E0E19D862B74C74C0D88C6258C6055EC8B33FD681E22CF8B4AFBCACF10612DB97FF1B7F07A35736ADFA0F8FD8EAA9AB23B99C7A9D5DA7412C4BD0045F971DE5FEC5E1911C5A82E5A474A7FE6DE596EB8C776642422D446B689FBBF86901161C70B66641B41B1523EF226A793EECB0231417CD6C39DB20D8F7C54B70356A05C534A462BF3C43" type="hidden">
+<input name="SITE" value="QFQFQFBD" type="hidden">
+<input name="ENCT" value="1" type="hidden">
+<input name="LANGUAGE" value="GB" type="hidden">
+ </form>   <script> WDSClass.extend("NavigationForm", "WDSForm"); function NavigationForm () { }; NavigationForm.prototype.submitForm = function (formNameCalled) { this.formName = formNameCalled; this.submit(); }; theNavigationForm = new NavigationForm(); </script>                               <div id="BABRContent_1" style="border: 1px solid black; display: none; background-color: rgb(255, 255, 255); position: absolute;"> <h1>Baggage</h1> <table cellspacing="0"> <tbody><tr> <th colspan="2">Baggage Allowance</th> <th>Passengers</th> <th width="70">&nbsp;</th> <th class="rightAlign">Total</th> </tr>                               <tr> <td> 1 piece </td> <td width="100">x</td> <td class="leftAlign"> 1   adult    </td> <td>=</td> <td>  1 piece  </td> </tr>             <tr class="total"> <td colspan="4">&nbsp;</td> <td class="borderB borderT">  <em><strong>1 piece</strong></em> </td> </tr>   </tbody></table> <input id="BABRContent_1_nbLine" value="1" type="hidden"> </div>          <div id="BABRContent_2" style="border: 1px solid black; display: none; background-color: rgb(255, 255, 255); position: absolute;"> <h1>Baggage</h1> <table cellspacing="0"> <tbody><tr> <th colspan="2">Baggage Allowance</th> <th>Passengers</th> <th width="70">&nbsp;</th> <th class="rightAlign">Total</th> </tr>                                 <tr> <td> 1 piece </td> <td width="100">x</td> <td class="leftAlign"> 1   adult    </td> <td>=</td> <td>  1 piece  </td> </tr>           <tr class="total"> <td colspan="4">&nbsp;</td> <td class="borderB borderT">  <em><strong>1 piece</strong></em> </td> </tr>   </tbody></table> <input id="BABRContent_2_nbLine" value="1" type="hidden"> </div>       <script> function BABRpopup() { this.tooltip = new WDSToolTip(null, null, 0, 0, false); this.toolTipOpened = false; }; BABRpopup.prototype.show = function(e, segment) { if (this.toolTipOpened) { this.toolTipOpened = false; this.tooltip.hide(); e.cancelBubble = true; e.returnValue = false; return false; }	if (e.ctrlKey) { this.toolTipOpened = true; this.tooltip.show("BABRContent_"+segment, e); e.cancelBubble = true; e.returnValue = false; return false; } else {  var monUrl = "OverrideServlet;jsessionid=LYLhS6sP2FGxrJkd5B1W0nZ89LdZsdBPpssJcT0Qdvy8bsGzy1p3!-127608305!773060733?EMBEDDED_TRANSACTION=DisplayViewServlet&SITE=QFQFQFBD&LANGUAGE=GB&SKIN=&JSP_NAME_KEY=SITE_JSP_TOTO&SO_SITE_JSP_TOTO=BABR.jsp&SEGMENT=" + segment; WDSCommon.popSizedWinNoScroll(monUrl, "600", "480"); } }; theBABRpopup = new BABRpopup(); </script>                     <div id="FABRContent" style="border: 1px solid black; display: none; background-color: rgb(255, 255, 255); position: absolute;"> <h1>Price Breakdown</h1>  <table cellspacing="0"> <tbody><tr> <th>&nbsp;</th> <th width="30">&nbsp;</th>     <th colspan="2">   Adult    </th> <th>&nbsp;</th>   <th colspan="2"></th> </tr> <tr>  <th>Fare</th> <td>&nbsp;</td>    <td class="leftAlign">1 x</td> <td><var id="FABR_UnitAmountWithoutTaxADT">506.76</var></td> <td>&nbsp;</td>   <td colspan="2">&nbsp;</td> </tr>   <tr>  <th>Charges/Taxes</th> <td>&nbsp;</td>    <td>&nbsp;</td> <td><var id="FABR_UnitTaxADT">73.24</var></td> <td>&nbsp;</td>   <td colspan="2">&nbsp;</td> </tr>                  </tbody><tbody class="CCLineStyleNONE"> <tr> <th>GST</th> <td>&nbsp;</td>  <td>&nbsp;</td>  <td id="idgstADT">58.00</td>    <td>&nbsp;</td>  <td colspan="2">&nbsp;</td> </tr> </tbody> <tbody class="CCLineStyleNULL"> <tr> <th>GST</th> <td>&nbsp;</td>  <td>&nbsp;</td>  <td id="idgstADT">58.00</td>    <td>&nbsp;</td>  <td colspan="2">&nbsp;</td> </tr> </tbody>    <tbody class="CCLineStyleNONE"> <tr> <th>Credit Card Fee</th> <td>&nbsp;</td>  <td>&nbsp;</td> <td id="idccsf">0.00</td> <td>&nbsp;</td>  <td colspan="2">&nbsp;</td> </tr> </tbody>                    <tbody class="CCLineStyleTotalNONE"> <tr class="total"> <th><em>Total Price</em> </th> <td>&nbsp;</td>  <td>&nbsp;</td>   <td id="idTotalByPaxTypeADT">645.70</td>    <td class="centreAlign">  =   </td>  <td class="borderB borderT"><em><strong><var id="FABR_TotalAmountPNR">$645.70</var></strong></em></td> <td>&nbsp;(AUD)</td> </tr> </tbody> <tbody class="CCLineStyleTotalNULL"> <tr class="total"> <th><em>Total Price</em> </th> <td>&nbsp;</td>  <td>&nbsp;</td>   <td id="idTotalByPaxTypeADT">645.70</td>    <td class="centreAlign">  =   </td>  <td class="borderB borderT"><em><strong><var id="FABR_TotalAmountPNR">$645.70</var></strong></em></td> <td>&nbsp;(AUD)</td> </tr> </tbody>    </table> <input id="FABRContent_nbRows" value="5" type="hidden"> <input id="FABRContent_nbColumns" value="1" type="hidden"> <span id="ccTypeStyleSelected" style="display: none;"></span> </div> <script type="text/javascript"> function FABRpopup() { this.tooltip = new WDSToolTip(null, null, 0, 0, false); this.toolTipOpened = false; }; FABRpopup.prototype.show = function(e) { if (this.toolTipOpened) { this.toolTipOpened = false; this.tooltip.hide(); e.cancelBubble = true; e.returnValue = false; return false; }	if (e.ctrlKey) { this.toolTipOpened = true; this.tooltip.show("FABRContent", e); e.cancelBubble = true; e.returnValue = false; return false; } else {  var monUrl = "OverrideServlet;jsessionid=LYLhS6sP2FGxrJkd5B1W0nZ89LdZsdBPpssJcT0Qdvy8bsGzy1p3!-127608305!773060733?EMBEDDED_TRANSACTION=DisplayViewServlet&SITE=QFQFQFBD&LANGUAGE=GB&SKIN=&JSP_NAME_KEY=SITE_JSP_TOTO&SO_SITE_JSP_TOTO=FABR.jsp"; WDSCommon.popSizedWinNoScroll(monUrl, "600", "480"); } }; document.getElementById("FABRContent").style.display = "none"; theFABRpopup = new FABRpopup(); </script> <script language="JavaScript" src="OverrideServlet_files/FABRPopup.js" type="text/javascript"></script>          <script src="OverrideServlet_files/flash-detect.js" type="text/javascript"></script> <script src="OverrideServlet_files/csp_link.js" type="text/javascript"></script>                                                                                                     <script src="OverrideServlet_files/displayETravelPromoContent.htm"></script>        <form name="SEARCH_FACADE_FORM" method="post" action="http://www.qantas.com.au/regions/do/dyn/QuickSearch"></form>     <form name="NEW_SEARCH_FACADE_FORM" method="post" action="http://www.qantas.com.au/regions/do/dyn/QuickSearch"> <input name="ENC" value="566B5FB0D6B97D1A404DC2C9379B4407C46DF203EB04D2D097829677659D13C231BD6DD1BDB929971512F7238A0E4EFBE5737CB09C2225E07D6FD6ECC6CDECE48EFD77BF4998CF58294547503AC1287779B49140211133B07BD490381B94AA3D1864BD1AE535CD54AD6EADD292CFDB6E2A5CDD4068AF9F0C53115614EA08B0F220D110573C1D772A1A3E271A74350DA3C3CCBD41FE1C8BE1F9146ED7576B383776C93F2B3A06E6C034A249C79E636399C648786C63428A49B2AF023BCAA32653E35D230F50F89DB26BC0567A87CD9487AC0242B070DB12C9EE605F8E3EB25244173C5AEBDFCA33B9FC5257908FC2F525FD9064BC62068761D3E1A1C410FF866F773F516176A8A6DD8B66EE9685EAA190E9FE25C7CD9409F839209728A44FD7DA40B119532DCD25229EC999427971D62EB733C2B204F91C05026E53A89B96DAA192D6DA438C309C0034C1F8FB5C9167A079ABCA72C8CDE0BF8347C3286E6880AD5977C1AC73E315041F2A077434536CCA5659C056D1192D43EDB26FAD0190608C1DB0CC0A61C12A0DE68C61E9559A9F38C8B80D30AB1B3FFF27D2DA527D3390240FC31F45C4D772D8E2E86763B2934467B4EA947A4278DDD8713B4E0E19D862B74C74C0D88C6258C6055EC8B33FD681E22CF8B4AFBCACF10612DB97FF1B7F07A35736ADFA0F8FD8EAA9AB23B99C7A9D5DA7412C4BD0045F971DE5FEC5E1911C5A82E5A474A7FE6DE596EB8C776642422D446B689FBBF86901161C70B66641B41B1523EF226A793EECB0231417CD6C39DB20D8F7C54B70356A05C534A462BF3C43" type="hidden">
+<input name="SITE" value="QFQFQFBD" type="hidden">
+<input name="ENCT" value="1" type="hidden">
+<input name="LANGUAGE" value="GB" type="hidden">
+ </form>   <form name="ERROR_FACADE_FORM" method="post" action="http://www.qantas.com.au/regions/dyn/BookingError"> <input name="ENC" value="566B5FB0D6B97D1A404DC2C9379B4407C46DF203EB04D2D097829677659D13C231BD6DD1BDB929971512F7238A0E4EFBE5737CB09C2225E07D6FD6ECC6CDECE48EFD77BF4998CF58294547503AC1287779B49140211133B07BD490381B94AA3D1864BD1AE535CD54AD6EADD292CFDB6E2A5CDD4068AF9F0C53115614EA08B0F220D110573C1D772A1A3E271A74350DA3C3CCBD41FE1C8BE1F9146ED7576B383776C93F2B3A06E6C034A249C79E636399C648786C63428A49B2AF023BCAA32653E35D230F50F89DB26BC0567A87CD9487AC0242B070DB12C9EE605F8E3EB25244173C5AEBDFCA33B9FC5257908FC2F525FD9064BC62068761D3E1A1C410FF866F773F516176A8A6DD8B66EE9685EAA190E9FE25C7CD9409F839209728A44FD7DA40B119532DCD25229EC999427971D62EB733C2B204F91C05026E53A89B96DAA192D6DA438C309C0034C1F8FB5C9167A079ABCA72C8CDE0BF8347C3286E6880AD5977C1AC73E315041F2A077434536CCA5659C056D1192D43EDB26FAD0190608C1DB0CC0A61C12A0DE68C61E9559A9F38C8B80D30AB1B3FFF27D2DA527D3390240FC31F45C4D772D8E2E86763B2934467B4EA947A4278DDD8713B4E0E19D862B74C74C0D88C6258C6055EC8B33FD681E22CF8B4AFBCACF10612DB97FF1B7F07A35736ADFA0F8FD8EAA9AB23B99C7A9D5DA7412C4BD0045F971DE5FEC5E1911C5A82E5A474A7FE6DE596EB8C776642422D446B689FBBF86901161C70B66641B41B1523EF226A793EECB0231417CD6C39DB20D8F7C54B70356A05C534A462BF3C43" type="hidden">
+<input name="SITE" value="QFQFQFBD" type="hidden">
+<input name="ENCT" value="1" type="hidden">
+<input name="LANGUAGE" value="GB" type="hidden">
+   <input name="ERROR_LIST" value="" type="hidden"> </form> <script type="text/javascript"> function Facade () { }; Facade.prototype.submitSearch = function () { document.SEARCH_FACADE_FORM.submit(); WDSWaitingImage.pleaseWait(); }; Facade.prototype.submitNewSearch = function () { document.NEW_SEARCH_FACADE_FORM.submit(); }; Facade.prototype.submitError = function () { document.ERROR_FACADE_FORM.submit(); WDSWaitingImage.pleaseWait(); }; /** * add a parameter to a given form * /!\ Deprecated: parameter can contain incorrect caracters /!\ * @parameterName * @parameterType * @parameterValue * @formName */ Facade.prototype.addParameter = function (parameterName, parameterType, parameterValue, formName) { var input = document.createElement("input"); input.name = parameterName; input.type = parameterType; input.value = parameterValue; eval("document." + formName).appendChild(input); }; var theFacade = new Facade(); </script>                  </body></html>

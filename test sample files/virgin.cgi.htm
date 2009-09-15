@@ -1,0 +1,2037 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html class="sIFR-hasFlash"><head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+//////////////////////////////////////////////////////////////////////////////
+//    Copyright(c) 2000 - 2006 Navitaire Inc.  All rights reserved.         //
+//                                                                          //
+//    This source code is protected by copyright law and international      //
+//    treaties.  Unauthorized reproduction, distribution or alteration      //
+//    of this source code, or any portion of it, may result in severe       //
+//    civil and criminal penalties and will be prosecuted to the maximum    //
+//    extent possible under the law.                                        //
+//                                                                          //
+//  Skylights 9.4a                                       www.navitaire.com  //
+//////////////////////////////////////////////////////////////////////////////
+-->
+
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<title>Online Booking | Itinerary</title>
+	<style type="text/css" media="screen">@import "../css/EN/master.css";</style>
+	<style type="text/css" media="screen">@import "../css/EN/itinerary_offers.css";</style>
+	<style type="text/css" media="print">@import "../css/EN/printer.css";</style>
+
+<script language="Javascript" type="text/javascript">
+<!--
+
+function captureAtaGlanceItinTextText(ataGlanceItinText)
+	{
+		ataGlanceItinText.popup_tax_breakdown = "Here is a breakdown of the taxes and \nfees that apply to your purchase.";
+		ataGlanceItinText.popup_per = "per";
+		ataGlanceItinText.popup_tax_total	= "Total Tax";
+		ataGlanceItinText.popup_reset_warning	= "Removing this service will cause your payments to be\nreset should you choose to continue. Proceed?";
+	}
+
+
+function capturePaymentPageAmounts(paymentPageAmount)
+	{
+		paymentPageAmount.total_amount		= "307.00";
+		paymentPageAmount.total_paid		= "307.00";
+	}
+
+//FIX FOR BAGGAGE
+//FUNCTION TO AUTO-UPDATE TOTALS
+var extrasArray;
+
+var INSURANCE 		= 0;
+var CARBON_OFFSET 	= 1;
+var BLUE_ZONE 		= 2;
+var BAGGAGE 		= 3;
+
+
+extrasArray = new Array();
+
+extrasArray[0] = 0.00;
+extrasArray[1] = 0.00;
+extrasArray[2] = 0.00;
+extrasArray[3] = 0.00;
+
+function updateTotals(extra_id, total_box_id, extra_index)
+{
+	var extraElem = $(extra_id);	
+	var totalBox = $(total_box_id);
+
+	var total_amount = 307.00 + arraySum(extrasArray);
+
+	if (extra_id == "baggage-total-price")
+	{
+		var flightTotal = $('flight-total-price');
+		
+		flightTotalAmount = 307.00 + extrasArray[BAGGAGE];
+		
+		flightTotal.innerHTML = "$" + flightTotalAmount.toFixed(2) + "";
+	}
+
+	//console.log("extra_index[" + extra_index + "]:" + extrasArray[extra_index]);
+
+	extraElem.innerHTML = "$" + extrasArray[extra_index].toFixed(2) + "";
+	totalBox.innerHTML = "$" + total_amount.toFixed(2) + "";	
+}
+
+function arraySum(array, mode)
+{
+	sum = 0.00;	
+	
+	for (i = 0; i < array.length; i++)
+	{
+		if (mode)
+		{
+			for (j = 0; j < market_size; j++)
+			{
+				//console.log("baggage_arr["+i+"]["+j+"]: " + parseFloat(array[i][j]));
+				sum += parseFloat(array[i][j]);
+			}
+		}
+		else
+		{
+			sum += parseFloat(array[i]);
+		}
+	}
+	
+	return sum;
+}
+
+//var insurance = 0.00;
+//CHECK INSURANCE IF PASSING FLOAT CORRECTLY!!!
+function INS_UpdateTotal(action)
+{
+	if ( action == 'yes' )
+	{
+		if ( document.skylightsForm.total_insurance.selectedIndex != 0) {
+			extrasArray[INSURANCE] = parseFloat(document.skylightsForm.total_insurance.value);
+		}
+		else {
+			alert('Please select your desired cover above before selecting Yes');
+			document.skylightsForm.takeup_insurance[1].checked = true;
+			document.skylightsForm.takeup_insurance[0].blur();
+		}
+	}
+	if ( action == 'no' )
+	{
+		if (document.skylightsForm.total_insurance.tagName == 'SELECT') {
+			document.skylightsForm.total_insurance.selectedIndex=0;
+		}		
+		extrasArray[INSURANCE] = 0.00;
+	}
+	
+	updateTotals('ins-total', 'ins-update-total', INSURANCE);
+}
+
+function INS_PulldownUpdateTotal(amount,optionID)
+{	
+	if (document.skylightsForm.total_insurance.selectedIndex==0) {
+		document.skylightsForm.takeup_insurance[1].checked = true;
+	}
+	
+	if (amount && document.skylightsForm.takeup_insurance[0].checked == true) {
+		extrasArray[INSURANCE] = parseFloat(amount);
+	}
+	else {
+
+		extrasArray[INSURANCE] = 0.00;
+	}	
+	if (optionID) {
+		if (optionID != "0") {document.skylightsForm.insplantype.value = optionID};
+	}
+	
+	updateTotals('ins-total', 'ins-update-total', INSURANCE);
+}
+
+/*FIX FOR CARBON OFFSET*/
+
+/*##############################################
+#
+# Function: updateTotalCarbonOffset()
+#	
+# Parameter: 
+#		numPax : number of passengers
+#
+# Description: 
+#	      Validates birthdates for all passengers
+#	      
+#	      
+#*/
+function updateTotalCarbonOffset(price)
+{
+	extrasArray[CARBON_OFFSET] = parseFloat(price);	
+	updateTotals('carbon-offset-price', 'ins-update-total', CARBON_OFFSET);
+}
+
+/*FIX FOR BLUE ZONE*/
+//BLUE ZONE outbound flight
+var blue_zone_1 = 0.00;
+//BLUE ZONE inbound flight
+var blue_zone_2 = 0.00;
+
+function initBlueZone(option)
+{
+	if (option && (option == 2))
+	{		
+		
+			updateTotalBlueZone('25.00', 1, 1);
+		
+			updateTotalBlueZone('25.00', 2, 1);
+		
+		
+		document.skylightsForm.bluezone_radio[1].checked = false;		
+	}
+	else
+	{
+		updateTotalBlueZone('0.00', 1);
+		updateTotalBlueZone('0.00', 2);
+		document.skylightsForm.bluezone_radio[0].checked = false;
+		
+		if (!option)
+		{
+			document.skylightsForm.bluezone_radio[1].checked = false;
+		}
+	}
+	document.skylightsForm.bluezone_terms.checked = false;
+}
+
+/*##############################################
+#
+# Function: updateTotalBlueZone()
+#	
+# Parameter: 
+#		numPax : number of passengers
+#
+# Description: 
+#	      Validates birthdates for all passengers
+#	      
+#	      
+#*/
+function updateTotalBlueZone(price, market_index, max)
+{	
+	if (document.skylightsForm['bluezone_seats_'+market_index])
+	{
+		
+		if (max)
+		{
+			document.skylightsForm['bluezone_seats_'+market_index].checked = true;
+		}
+	
+		if (price <= 0.00)
+		{
+			document.skylightsForm['bluezone_seats_' + market_index].checked = false;
+		}	
+		
+		if (document.skylightsForm['bluezone_seats_'+market_index].checked)
+		{
+			eval("blue_zone_" + market_index + " = parseFloat(price).toFixed(2)");
+		}
+		else
+		{
+			eval("blue_zone_" + market_index + " = 0.00");
+		}
+	
+	}
+	
+	extrasArray[BLUE_ZONE] = parseFloat(blue_zone_1) + parseFloat(blue_zone_2);
+	
+	updateTotals('blue-zone-price', 'ins-update-total', BLUE_ZONE);
+}
+
+
+/*FIX FOR BAGGAGE*/
+var baggage_arr;
+
+function initBaggage()
+{
+	baggage_arr = new Array(1);
+	
+	market_size = 2;
+	
+	for (i = 0; i < baggage_arr.length; i++)
+	{
+		baggage_arr[i] = new Array(market_size);
+		for (j = 0; j < market_size; j++)
+		{
+			baggage_arr[i][j] = 0.00;
+		}
+	}
+	
+		
+		
+	if (document.skylightsForm.bag1market1display.options)
+	{
+		document.skylightsForm.bag1market1display.selectedIndex = 0;
+	}
+	if (document.skylightsForm.bag1market1)
+	{
+		document.skylightsForm.bag1market1.value = "";
+	}
+		
+	if (document.skylightsForm.bag1market2display.options)
+	{
+		document.skylightsForm.bag1market2display.selectedIndex = 0;
+	}
+	if (document.skylightsForm.bag1market2)
+	{
+		document.skylightsForm.bag1market2.value = "";
+	}
+		
+	
+}
+
+/*##############################################
+#
+# Function: updateTotalBaggage()
+#	
+# Parameter: 
+#		numPax : number of passengers
+#
+# Description: 
+#	      Validates birthdates for all passengers
+#	      
+#	      
+#*/
+function updateTotalBaggage(pax_num, market_index, price)
+{
+	selected_value = eval("document.skylightsForm.bag" + pax_num + "market" + market_index + "display.value");
+	
+	if (selected_value == "STANDARD")
+	{
+		baggage_arr[pax_num - 1][market_index - 1] = parseFloat(price.substring(1));		
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").innerHTML = "";
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").className = "bagLabel";
+		eval("document.skylightsForm.bag" + pax_num + "market" + market_index + ".value = 'STANDARD'");
+	}
+	else if (selected_value == "NONE")
+	{
+		baggage_arr[pax_num - 1][market_index - 1] = 0.00;
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").innerHTML = "No checked baggage for this flight";
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").className = "bagLabel";
+		eval("document.skylightsForm.bag" + pax_num + "market" + market_index + ".value = 'NONE'");
+	}
+	else
+	{
+		baggage_arr[pax_num - 1][market_index - 1] = 0.00;//No checked bags for this flight
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").innerHTML = "Add checked baggage online for " + price + " (or $20 at the airport)";
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").className = "bagLabel red";
+		eval("document.skylightsForm.bag" + pax_num + "market" + market_index + ".value = ''");
+	}
+	
+	extrasArray[BAGGAGE] = parseFloat(arraySum(baggage_arr, 1));
+	
+	updateTotals('baggage-total-price', 'ins-update-total', BAGGAGE);
+}
+
+function clearPaxBaggage(pax_num)
+{	
+	
+	baggage_arr[pax_num - 1][1 - 1] = 0.00;
+	
+	baggage_arr[pax_num - 1][2 - 1] = 0.00;
+	
+	extrasArray[BAGGAGE] = parseFloat(arraySum(baggage_arr, 1));
+	updateTotals('baggage-total-price', 'ins-update-total', BAGGAGE);
+}
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+		var fareRulesCustom = new Array();
+			if ( ! fareRulesCustom['T195'] )
+			{
+				fareRulesCustom['T195'] = new Array();
+					fareRulesCustom['T195'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['T195'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['T195'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['T195'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['T195'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['T195'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['T195'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['T195'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+		
+			if ( ! fareRulesCustom['R120'] )
+			{
+				fareRulesCustom['R120'] = new Array();
+					fareRulesCustom['R120'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['R120'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['R120'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['R120'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['R120'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['R120'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['R120'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['R120'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+		
+			if ( ! fareRulesCustom['T195'] )
+			{
+				fareRulesCustom['T195'] = new Array();
+					fareRulesCustom['T195'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['T195'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['T195'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['T195'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['T195'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['T195'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['T195'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['T195'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+		
+			if ( ! fareRulesCustom['R120'] )
+			{
+				fareRulesCustom['R120'] = new Array();
+					fareRulesCustom['R120'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['R120'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['R120'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['R120'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['R120'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['R120'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['R120'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['R120'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+				
+		function showFareRule(fareBasis, fareLabel, ruleDivId)
+		{
+			var message	= "Fare Details " + fareLabel + "<br>";
+			for ( var i = 0; i < fareRules[fareBasis].length; i++ )
+			{
+				message += "-" + fareRules[fareBasis][i] + "<br>";
+			}
+			document.getElementById(ruleDivId).innerHTML = message;
+		}
+		
+		var timer;
+ 		var FareMessage;
+	
+	   	function showFareRuleAlert(fareBasis, fareLabel, ruleDivId)
+	    {
+	                var message     = "Fare Details " + fareLabel + "<br>";
+					message += "<ul>";
+	                for ( var i = 0; i < fareRules[fareBasis].length; i++ )
+	                {
+	                        message += "<li>" + fareRules[fareBasis][i] + "</li><br>";
+	                }
+					message += "</ul>";
+					FareMessage = message;
+					window.open ("/apps/skylights/popup.php?title=" + fareLabel + " Fare Rules", "mywindow","location=0,status=0,scrollbars=1,width=700,height=700");
+	    }
+			
+		function showFareRuleAlertCustom(fareBasis, fareLabel, ruleDivId)
+		{
+			var message	= "Fare Details " + fareLabel + "<br>";
+			message += "<ul>";
+			for ( var i = 0; i < fareRulesCustom[fareBasis].length; i++ )
+			{
+				message += "<li>" + fareRulesCustom[fareBasis][i] + "</li><br>";
+			}
+			message += "</ul>";
+			FareMessage = message;
+			window.open ("/apps/skylights/popup.php?title=" + fareLabel + " Fare Rules", "mywindow","location=0,status=0,scrollbars=1,width=700,height=700");
+		}
+	
+
+function captureAtaGlanceItinTextText(ataGlanceItinText)
+	{
+		ataGlanceItinText.popup_tax_breakdown = "Here is a breakdown of the taxes and \nfees that apply to your purchase.";
+		ataGlanceItinText.popup_per = "per";
+		ataGlanceItinText.popup_tax_total	= "Total Tax";
+		ataGlanceItinText.popup_reset_warning	= "Removing this service will cause your payments to be\nreset should you choose to continue. Proceed?";
+	}
+
+
+function capturePaymentPageAmounts(paymentPageAmount)
+	{
+		paymentPageAmount.total_amount		= "307.00";
+		paymentPageAmount.total_paid		= "307.00";
+	}
+
+//FIX FOR BAGGAGE
+//FUNCTION TO AUTO-UPDATE TOTALS
+var extrasArray;
+
+var INSURANCE 		= 0;
+var CARBON_OFFSET 	= 1;
+var BLUE_ZONE 		= 2;
+var BAGGAGE 		= 3;
+
+
+extrasArray = new Array();
+
+extrasArray[0] = 0.00;
+extrasArray[1] = 0.00;
+extrasArray[2] = 0.00;
+extrasArray[3] = 0.00;
+
+function updateTotals(extra_id, total_box_id, extra_index)
+{
+	var extraElem = $(extra_id);	
+	var totalBox = $(total_box_id);
+
+	var total_amount = 307.00 + arraySum(extrasArray);
+
+	if (extra_id == "baggage-total-price")
+	{
+		var flightTotal = $('flight-total-price');
+		
+		flightTotalAmount = 307.00 + extrasArray[BAGGAGE];
+		
+		flightTotal.innerHTML = "$" + flightTotalAmount.toFixed(2) + "";
+	}
+
+	//console.log("extra_index[" + extra_index + "]:" + extrasArray[extra_index]);
+
+	extraElem.innerHTML = "$" + extrasArray[extra_index].toFixed(2) + "";
+	totalBox.innerHTML = "$" + total_amount.toFixed(2) + "";	
+}
+
+function arraySum(array, mode)
+{
+	sum = 0.00;	
+	
+	for (i = 0; i < array.length; i++)
+	{
+		if (mode)
+		{
+			for (j = 0; j < market_size; j++)
+			{
+				//console.log("baggage_arr["+i+"]["+j+"]: " + parseFloat(array[i][j]));
+				sum += parseFloat(array[i][j]);
+			}
+		}
+		else
+		{
+			sum += parseFloat(array[i]);
+		}
+	}
+	
+	return sum;
+}
+
+//var insurance = 0.00;
+//CHECK INSURANCE IF PASSING FLOAT CORRECTLY!!!
+function INS_UpdateTotal(action)
+{
+	if ( action == 'yes' )
+	{
+		if ( document.skylightsForm.total_insurance.selectedIndex != 0) {
+			extrasArray[INSURANCE] = parseFloat(document.skylightsForm.total_insurance.value);
+		}
+		else {
+			alert('Please select your desired cover above before selecting Yes');
+			document.skylightsForm.takeup_insurance[1].checked = true;
+			document.skylightsForm.takeup_insurance[0].blur();
+		}
+	}
+	if ( action == 'no' )
+	{
+		if (document.skylightsForm.total_insurance.tagName == 'SELECT') {
+			document.skylightsForm.total_insurance.selectedIndex=0;
+		}		
+		extrasArray[INSURANCE] = 0.00;
+	}
+	
+	updateTotals('ins-total', 'ins-update-total', INSURANCE);
+}
+
+function INS_PulldownUpdateTotal(amount,optionID)
+{	
+	if (document.skylightsForm.total_insurance.selectedIndex==0) {
+		document.skylightsForm.takeup_insurance[1].checked = true;
+	}
+	
+	if (amount && document.skylightsForm.takeup_insurance[0].checked == true) {
+		extrasArray[INSURANCE] = parseFloat(amount);
+	}
+	else {
+
+		extrasArray[INSURANCE] = 0.00;
+	}	
+	if (optionID) {
+		if (optionID != "0") {document.skylightsForm.insplantype.value = optionID};
+	}
+	
+	updateTotals('ins-total', 'ins-update-total', INSURANCE);
+}
+
+/*FIX FOR CARBON OFFSET*/
+
+/*##############################################
+#
+# Function: updateTotalCarbonOffset()
+#	
+# Parameter: 
+#		numPax : number of passengers
+#
+# Description: 
+#	      Validates birthdates for all passengers
+#	      
+#	      
+#*/
+function updateTotalCarbonOffset(price)
+{
+	extrasArray[CARBON_OFFSET] = parseFloat(price);	
+	updateTotals('carbon-offset-price', 'ins-update-total', CARBON_OFFSET);
+}
+
+/*FIX FOR BLUE ZONE*/
+//BLUE ZONE outbound flight
+var blue_zone_1 = 0.00;
+//BLUE ZONE inbound flight
+var blue_zone_2 = 0.00;
+
+function initBlueZone(option)
+{
+	if (option && (option == 2))
+	{		
+		
+			updateTotalBlueZone('25.00', 1, 1);
+		
+			updateTotalBlueZone('25.00', 2, 1);
+		
+		
+		document.skylightsForm.bluezone_radio[1].checked = false;		
+	}
+	else
+	{
+		updateTotalBlueZone('0.00', 1);
+		updateTotalBlueZone('0.00', 2);
+		document.skylightsForm.bluezone_radio[0].checked = false;
+		
+		if (!option)
+		{
+			document.skylightsForm.bluezone_radio[1].checked = false;
+		}
+	}
+	document.skylightsForm.bluezone_terms.checked = false;
+}
+
+/*##############################################
+#
+# Function: updateTotalBlueZone()
+#	
+# Parameter: 
+#		numPax : number of passengers
+#
+# Description: 
+#	      Validates birthdates for all passengers
+#	      
+#	      
+#*/
+function updateTotalBlueZone(price, market_index, max)
+{	
+	if (document.skylightsForm['bluezone_seats_'+market_index])
+	{
+		
+		if (max)
+		{
+			document.skylightsForm['bluezone_seats_'+market_index].checked = true;
+		}
+	
+		if (price <= 0.00)
+		{
+			document.skylightsForm['bluezone_seats_' + market_index].checked = false;
+		}	
+		
+		if (document.skylightsForm['bluezone_seats_'+market_index].checked)
+		{
+			eval("blue_zone_" + market_index + " = parseFloat(price).toFixed(2)");
+		}
+		else
+		{
+			eval("blue_zone_" + market_index + " = 0.00");
+		}
+	
+	}
+	
+	extrasArray[BLUE_ZONE] = parseFloat(blue_zone_1) + parseFloat(blue_zone_2);
+	
+	updateTotals('blue-zone-price', 'ins-update-total', BLUE_ZONE);
+}
+
+
+/*FIX FOR BAGGAGE*/
+var baggage_arr;
+
+function initBaggage()
+{
+	baggage_arr = new Array(1);
+	
+	market_size = 2;
+	
+	for (i = 0; i < baggage_arr.length; i++)
+	{
+		baggage_arr[i] = new Array(market_size);
+		for (j = 0; j < market_size; j++)
+		{
+			baggage_arr[i][j] = 0.00;
+		}
+	}
+	
+		
+		
+	if (document.skylightsForm.bag1market1display.options)
+	{
+		document.skylightsForm.bag1market1display.selectedIndex = 0;
+	}
+	if (document.skylightsForm.bag1market1)
+	{
+		document.skylightsForm.bag1market1.value = "";
+	}
+		
+	if (document.skylightsForm.bag1market2display.options)
+	{
+		document.skylightsForm.bag1market2display.selectedIndex = 0;
+	}
+	if (document.skylightsForm.bag1market2)
+	{
+		document.skylightsForm.bag1market2.value = "";
+	}
+		
+	
+}
+
+/*##############################################
+#
+# Function: updateTotalBaggage()
+#	
+# Parameter: 
+#		numPax : number of passengers
+#
+# Description: 
+#	      Validates birthdates for all passengers
+#	      
+#	      
+#*/
+function updateTotalBaggage(pax_num, market_index, price)
+{
+	selected_value = eval("document.skylightsForm.bag" + pax_num + "market" + market_index + "display.value");
+	
+	if (selected_value == "STANDARD")
+	{
+		baggage_arr[pax_num - 1][market_index - 1] = parseFloat(price.substring(1));		
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").innerHTML = "";
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").className = "bagLabel";
+		eval("document.skylightsForm.bag" + pax_num + "market" + market_index + ".value = 'STANDARD'");
+	}
+	else if (selected_value == "NONE")
+	{
+		baggage_arr[pax_num - 1][market_index - 1] = 0.00;
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").innerHTML = "No checked baggage for this flight";
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").className = "bagLabel";
+		eval("document.skylightsForm.bag" + pax_num + "market" + market_index + ".value = 'NONE'");
+	}
+	else
+	{
+		baggage_arr[pax_num - 1][market_index - 1] = 0.00;//No checked bags for this flight
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").innerHTML = "Add checked baggage online for " + price + " (or $20 at the airport)";
+		document.getElementById("bag" + pax_num + "market" + market_index + "label").className = "bagLabel red";
+		eval("document.skylightsForm.bag" + pax_num + "market" + market_index + ".value = ''");
+	}
+	
+	extrasArray[BAGGAGE] = parseFloat(arraySum(baggage_arr, 1));
+	
+	updateTotals('baggage-total-price', 'ins-update-total', BAGGAGE);
+}
+
+function clearPaxBaggage(pax_num)
+{	
+	
+	baggage_arr[pax_num - 1][1 - 1] = 0.00;
+	
+	baggage_arr[pax_num - 1][2 - 1] = 0.00;
+	
+	extrasArray[BAGGAGE] = parseFloat(arraySum(baggage_arr, 1));
+	updateTotals('baggage-total-price', 'ins-update-total', BAGGAGE);
+}
+
+
+
+
+
+
+
+
+
+	
+		var fareRulesCustom = new Array();
+			if ( ! fareRulesCustom['T195'] )
+			{
+				fareRulesCustom['T195'] = new Array();
+					fareRulesCustom['T195'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['T195'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['T195'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['T195'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['T195'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['T195'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['T195'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['T195'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+		
+			if ( ! fareRulesCustom['R120'] )
+			{
+				fareRulesCustom['R120'] = new Array();
+					fareRulesCustom['R120'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['R120'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['R120'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['R120'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['R120'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['R120'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['R120'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['R120'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+		
+			if ( ! fareRulesCustom['T195'] )
+			{
+				fareRulesCustom['T195'] = new Array();
+					fareRulesCustom['T195'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['T195'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['T195'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['T195'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['T195'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['T195'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['T195'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['T195'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+		
+			if ( ! fareRulesCustom['R120'] )
+			{
+				fareRulesCustom['R120'] = new Array();
+					fareRulesCustom['R120'][0]	= " The Basics - This is our discount fare. It gives you the best possible price, but it is not as flexible as our more expensive fares. There are restrictions on your ability to change or cancel the fare. The fare is not refundable, but you can obtain a credit for use later.";				
+					fareRulesCustom['R120'][1]	= " Baggage - For domestic flights this fare includes carry-on baggage only. If you wish to take baggage you must purchase the checked baggage allowance of up to 23kgs.  You can pre-purchase this baggage allowance before you arrive at the airport either online or by calling the Guest Contact Centre. For each fare you buy you can pre-purchase the checked baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or $8NZD (NZ domestic) per flight.  If you do not pre-purchase the baggage allowance before you arrive at the airport and you have baggage to check-in then you will be charged a fee of $20AUD (Aust domestic) or $20NZD (NZ domestic) at the airport for a baggage allowance of up to 23kg per flight. The baggage fee is non refundable and non transferable. For domestic flights departing before 1 September 2008 and for international flights this fare includes a free checked baggage allowance of up to 20kg.";				
+					fareRulesCustom['R120'][2]	= " Changes - You can change the date and time of your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. Any other changes (such as name changes or changes to routing) are not permitted, and will be treated as a cancellation. If you made your original booking on our website, you can make changes on our website. If you did not make your original booking on our website, you must contact the Guest Contact Centre (GCC).- For Changes you make using our website (see also 'Which Currency', below):Domestic flights - a change fee of $35AUD (Aust domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare difference(see below). International flights - a change fee of $40AUD(for other currencies, see 'Currency' below). - For Changes you makethrough the GCC (see also 'Currency', below):Domestic flights -a change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest plus any applicable fare difference (see below). Internationalflights - a change fee of $50AUD (for other currencies, see 'Currency'below). - Fare Difference - Your new fare will be at least the price of the original fare and may be more. You must pay this fare difference when you change your booking. GCC fares are at least $15AUD/$15NZD more than internet fares.";				
+					fareRulesCustom['R120'][3]	= " Cancellations - You can cancel your flight if you make the request at least 24hrs prior to your flight's scheduled departure time. You can use the same methods as for making changes. See above.- For Cancellations you make using our website - a cancellation fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for international flights. - For Cancellations you make through the GCC - a cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per Guest for international flights.";				
+					fareRulesCustom['R120'][4]	= " Giving credit - Regardless of your initial form of payment(including velocity points), if you cancel your flights in accordance with these rules, any balance will be held in credit for use within 12 months from the date you purchased the flight. All future bookings utilising your credit, can only be made via the GCC and at applicable GCC fare levels. GCC fares are at least $15AUD/$15NZD more than internet fares. You may not cancel a payment of any fee for the checked baggage allowance unless you cancel your fare at the same time.";				
+					fareRulesCustom['R120'][5]	= " No show/Late cancellation - If you do not fly and do not notify us at least 24 hours prior to the flight's scheduled departure time or you cancel your flight within 24 hours prior to the flight's scheduled departure time, you will forfeit any fare paid, any fees paid for checked baggage and/or your Velocity Points (as applicable).";				
+					fareRulesCustom['R120'][6]	= " Other important fare rules - This fare is non-refundable, non-transferable and name changes are not permitted. This fare is only applicable origin to destination and no enroute stopovers are permitted.";				
+					fareRulesCustom['R120'][7]	= " Currency - For international travel, the currency in which you made your original booking will apply any changes or cancellations you make. Please refer to the Fees and Charges tab in the Booking section of our website or your itinerary for applicable charges in that currency.";							}
+				
+		function showFareRule(fareBasis, fareLabel, ruleDivId)
+		{
+			var message	= "Fare Details " + fareLabel + "<br>";
+			for ( var i = 0; i < fareRules[fareBasis].length; i++ )
+			{
+				message += "-" + fareRules[fareBasis][i] + "<br>";
+			}
+			document.getElementById(ruleDivId).innerHTML = message;
+		}
+		
+		var timer;
+ 		var FareMessage;
+	
+	   	function showFareRuleAlert(fareBasis, fareLabel, ruleDivId)
+	    {
+	                var message     = "Fare Details " + fareLabel + "<br>";
+					message += "<ul>";
+	                for ( var i = 0; i < fareRules[fareBasis].length; i++ )
+	                {
+	                        message += "<li>" + fareRules[fareBasis][i] + "</li><br>";
+	                }
+					message += "</ul>";
+					FareMessage = message;
+					window.open ("/apps/skylights/popup.php?title=" + fareLabel + " Fare Rules", "mywindow","location=0,status=0,scrollbars=1,width=700,height=700");
+	    }
+			
+		function showFareRuleAlertCustom(fareBasis, fareLabel, ruleDivId)
+		{
+			var message	= "Fare Details " + fareLabel + "<br>";
+			message += "<ul>";
+			for ( var i = 0; i < fareRulesCustom[fareBasis].length; i++ )
+			{
+				message += "<li>" + fareRulesCustom[fareBasis][i] + "</li><br>";
+			}
+			message += "</ul>";
+			FareMessage = message;
+			window.open ("/apps/skylights/popup.php?title=" + fareLabel + " Fare Rules", "mywindow","location=0,status=0,scrollbars=1,width=700,height=700");
+		}
+	
+
+
+	
+	
+//-->
+</script>
+
+<script language="Javascript" type="text/javascript" src="skylights.cgi_files/prototype.js"></script>
+<script language="Javascript" type="text/javascript" src="skylights.cgi_files/sifr.js"></script>
+<script language="Javascript" type="text/javascript" src="skylights.cgi_files/navigate.js"></script>
+<script language="Javascript" type="text/javascript" src="skylights.cgi_files/common.js"></script>
+	
+		<script language="Javascript" type="text/javascript" src="skylights.cgi_files/scriptaculous.js"></script><script type="text/javascript" src="skylights.cgi_files/effects.js"></script>	
+		<script language="Javascript" type="text/javascript" src="skylights.cgi_files/json.js"></script>
+
+		<script language="Javascript" type="text/javascript" src="skylights.cgi_files/itinerary.js"></script>
+		<script language="Javascript" type="text/javascript" src="skylights.cgi_files/ataGlanceItin.js"></script>
+		<script language="Javascript" type="text/javascript" src="skylights.cgi_files/showDiv.js"></script>
+		<script language="Javascript" type="text/javascript" src="skylights.cgi_files/balanceHeight.js"></script>
+
+<!--[if lte IE 6]>
+	<link rel="stylesheet" type="text/css" href="../css/EN/ie6.css" media="screen" />
+<![endif]-->
+
+<link rel="shortcut icon" href="https://bookings.virginblue.com.au/skylights/images/favicon.ico">
+
+<script type="text/javascript">
+function trace( msg ){
+  if( typeof( jsTrace ) != 'undefined' ){
+    jsTrace.send( msg );
+  }
+}
+</script>
+
+</head><body id="itinerary">
+
+
+
+	<form class="formNoPad" id="navForm" name="navForm" method="post" action="skylights.cgi">
+		<input name="event" value="" type="hidden">
+		<input name="module" value="SB" type="hidden">
+		<input name="page" value="ITINERARY" type="hidden">
+		<input name="language" value="EN" type="hidden">
+		<input name="mode" value="" type="hidden">
+		<input name="sid" value="A1a56d025f6a074c2ccc123e9b9a5cdb6ce319dae3" type="hidden">
+		<input name="ref" value="" type="hidden">
+		<!-- FIX FOR Polynesian Logo -->
+		<input name="referer" value="https://bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi" type="hidden">
+		<!--- FIX FOR HBX ---->
+		<input name="hbxacct" value="DM570318EMCB03EN3" type="hidden">
+	</form>
+	
+	<h1 id="logo-vb" class="logo">
+		<a href="https://bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi">
+		<img src="skylights.cgi_files/logo_virginblue.gif" alt="">
+		</a>
+	</h1>
+
+	<div class="wrapper clearfix">
+		<div id="content">
+
+		
+
+		
+			<div class="container clearfix">
+				<div class="container-top">
+					
+					
+                				<ul id="nav-simple" class="clearfix">
+							<li class="nav-search visited"><a href="javascript:navigate('SB',%20'SEARCH')">1. SEARCH</a></li>
+							<li class="nav-select inactive"><span>2. SELECT</span></li>
+							<li class="nav-confirm inactive"><span>3. CONFIRM</span></li>
+							<li class="nav-payment inactive"><span>4. PAYMENT</span></li>
+							<li class="nav-itinerary active"><a href="javascript:navigate('SB',%20'ITINERARY')">5. ITINERARY</a></li>
+							
+                				</ul>
+                			
+                			
+				</div><!-- end .container-top -->
+				<div class="container-body">
+					<form method="post" name="skylightsForm" id="skylightsForm" action="skylights.cgi">
+						<input name="event" value="" type="hidden">
+						<input name="module" value="SB" type="hidden">
+						<input name="page" value="ITINERARY" type="hidden">
+						<input name="language" value="EN" type="hidden">
+						<input name="mode" value="" type="hidden">
+						<input name="sid" value="A1a56d025f6a074c2ccc123e9b9a5cdb6ce319dae3" type="hidden">
+						<input name="ref" value="" type="hidden">
+						<!-- FIX FOR Polynesian Logo -->
+						<input name="referer" value="https://bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi" type="hidden">		
+						<!--- FIX FOR HBX ---->
+						<input name="hbxacct" value="DM570318EMCB03EN3" type="hidden">
+
+						
+
+	<!-- start left hand side -->  <div class="box">
+  <div class="box-title"><h2 class="sIFR-replaced"><embed style="width: 653px; height: 22px;" class="sIFR-flash" type="application/x-shockwave-flash" sifr="true" bgcolor="transparent" wmode="transparent" flashvars="txt=Thank you for booking with Virgin Blue!&amp;textcolor=#cc0000&amp;w=653&amp;h=22" quality="best" src="skylights.cgi_files/crille_sifr.swf" width="653" height="22"><span class="sIFR-alternate">Thank you for booking with Virgin Blue!</span></h2></div>
+	<div class="box-body clearfix">
+	
+	<div class="itin-text">
+	
+	<h3>Helpful hints for a smooth journey...</h3>
+	
+	<!-- <p>Thank you! Your booking is now complete. Please read the important information below:</p> -->
+	<ul>
+	<!--
+		<li>Virgin Blue is a ticketless airline, therefore you don't need a ticket to travel with us.</li>
+		<li>To check-in quote your Reservation Number and produce photo identification.</li>
+		<li>You will need to quote your Reservation Number to make any changes to your booking.</li>
+		<li>Your flight itinerary will be emailed to your nominated email address.</li>
+		<li>If you have nominated not to receive an email copy of your itinerary - keep a record of your Reservation Number and print this page.</li>
+		<li>If booking an international flight you will need to present a hardcopy of your itinerary at check-in.
+		<li>All times displayed are local times at the relevant airports.</li>
+	
+		<li>Be sure to check out our destination pages for valuable information about <a href="http://www.virginblue.com.au/flightInfo/citys/syd/" target="_top">Sydney</a> and <a href="http://www.virginblue.com.au/flightInfo/citys/bne/" target="_top">Brisbane</a></li>
+	
+	-->
+		<li class="clearfix">
+			<div class="header">Your Itinerary:</div>
+			<label class="description">- You'll receive your itinerary via email. If you didn't enter an email address, you should <a href="javascript:window.print()">print this page</a>.</label>
+		</li>
+		
+		
+		<li class="clearfix">
+			<div class="header">Baggage:</div>
+			<label class="description">- Learn about our <a href="http://www.virginblue.com.au/Personal/Flightinfo/Baggagedangerousgoods/Baggage/Baggageallowanceexcessbaggage/index.htm" target="_blank">Baggage Policy</a>, <a href="http://www.virginblue.com.au/Personal/Flightinfo/Baggagedangerousgoods/Baggage/Baggageallowanceexcessbaggage/index.htm#index1" target="_blank">Carry-on Baggage</a>, and <a href="http://www.virginblue.com.au/Personal/Flightinfo/Baggagedangerousgoods/Dangerousgoods/index.htm" target="_blank">Dangerous Goods</a>.</label>
+		</li>
+		
+		<li class="clearfix">
+			<div class="header">Checking-In:</div>
+			<label class="description">- Save time, select your own seat with <a href="http://www.virginblue.com.au/Personal/Services/Check-inoptions/index.htm" target="_blank">Web Check-In</a>.</label>
+		</li>
+		<li class="clearfix">
+			<div class="header">&nbsp;</div>
+			<label class="description">- At the airport, check-in with your <strong>Reservation Number VIUNCD</strong> and photo identification.</label>
+		</li>
+		<li class="clearfix">
+			<div class="header">&nbsp;</div>
+			<label class="description">- For International flights, make sure you take a printed copy of your Itinerary with you to Check-In.</label>
+		</li>
+		<li class="clearfix">
+			<div class="header">Times:</div>
+			<label class="description">- All times displayed are local times at the relevant airports.</label>
+		</li>
+		<li class="clearfix">
+			<div class="header">Be in the know!</div>
+			<label class="description">- <a href="http://www.arrivalguides.com/GuidesDownload.aspx?partner=virginblue&amp;group=CITY&amp;dest=Brisbane&amp;lang=en&amp;age=999&amp;gender=X&amp;email=virginblue@fastcheck.se&amp;source=virginblue" target="_blank">Print Free Travel Guides</a>.</label>
+		</li>
+		
+		<li class="clearfix">
+			<div class="header">&nbsp;</div>
+			<label class="description">- Check out our Destination pages for valuable information about <a href="http://www.virginblue.com.au/flightInfo/citys/syd/" target="_top">Sydney</a> and <a href="http://www.virginblue.com.au/flightInfo/citys/bne/" target="_top">Brisbane</a>.</label>
+		</li>
+		
+	</ul>
+	</div>
+
+<div id="arrivalguide" style="display: block;" align="center">
+<a style="float: left;" title="Pre-purchase your Single Lounge Entry and save" href="http://www.virginblue.com.au/thelounge/passes/?CMP=ILC-LoungeItin&amp;attr=tile1"><img src="skylights.cgi_files/banner_thelounge.gif" alt="Pre-purchase your Single Lounge Entry and save" border="0"></a>
+<a style="float: right;" title="Directly download the Arrival Guide for Brisbane" href="http://www.arrivalguides.com/GuidesDownload.aspx?partner=virginblue&amp;group=CITY&amp;dest=Brisbane&amp;lang=en&amp;age=999&amp;gender=X&amp;email=virginblue@fastcheck.se&amp;source=virginblue"><img src="skylights.cgi_files/banner_travelguides.gif" alt="Directly download the Arrival Guide for Brisbane" border="0"></a>
+</div>
+
+	</div><!-- end .box-body -->
+</div><!-- end .box -->
+<div class="box-bot">&nbsp;</div>
+<input name="jsonItineraryInfo" id="jsonItineraryInfo" value="{ &quot;adults&quot; : &quot;1&quot;, &quot;arrive&quot; : &quot;2008-09-24&quot;, &quot;arriveTime&quot; : &quot;2155&quot;, &quot;child_ages&quot; : &quot;&quot;, &quot;children&quot; : &quot;&quot;, &quot;contact_email&quot; : &quot;oztravel@thoughtworks.com&quot;, &quot;contact_first&quot; : &quot;Shaw&quot;, &quot;contact_last&quot; : &quot;Scott&quot;, &quot;contact_phone&quot; : &quot;0402653576&quot;, &quot;depart&quot; : &quot;2008-09-24&quot;, &quot;departTime&quot; : &quot;2030&quot;, &quot;destination&quot; : &quot;BNE&quot;, &quot;flight_number&quot; : &quot;273&quot;, &quot;infants&quot; : &quot;&quot;, &quot;origin&quot; : &quot;SYD&quot;, &quot;passengers&quot; : &quot;1&quot;, &quot;pnr&quot; : &quot;VIUNCD&quot;, &quot;r_arrive&quot; : &quot;2008-09-25&quot;, &quot;r_arriveTime&quot; : &quot;1630&quot;, &quot;r_depart&quot; : &quot;2008-09-25&quot;, &quot;r_departTime&quot; : &quot;1500&quot;, &quot;velocity_number&quot; : &quot;2115412320&quot; }" type="hidden">
+  <div class="box" id="itinInfoPanel">
+  <div class="box-title"><h2 class="sIFR-replaced"><embed style="width: 653px; height: 22px;" class="sIFR-flash" type="application/x-shockwave-flash" sifr="true" bgcolor="transparent" wmode="transparent" flashvars="txt=Booking Confirmation&amp;textcolor=#cc0000&amp;w=653&amp;h=22" quality="best" src="skylights.cgi_files/crille_sifr.swf" width="653" height="22"><span class="sIFR-alternate">Booking Confirmation</span></h2></div>
+	<div class="box-body">
+		<div class="booking-conf clearfix">
+			<div class="row clearfix">
+					<div class="booking-conf-label">
+						Reservation Number: 
+					</div>
+					<div class="booking-conf-data highlight">
+						VIUNCD						
+					</div>
+					<div class="booking-conf-label">					
+						&nbsp;
+					</div>
+					<div class="booking-conf-data">
+					
+					
+			You will need to provide this Reservation Number
+			and positive I.D. at Check-In.
+	
+					</div>
+			</div>
+			<div class="row clearfix">
+					<div class="booking-conf-label">
+						Reservation Date:
+					</div>
+					<div class="booking-conf-data">
+						Tuesday, 23 Sep 08
+					</div>
+				</div>
+			
+			<div class="row clearfix">
+					<div class="booking-conf-label">
+						Reservation Status: 
+					</div>
+					<div class="booking-conf-data highlight">
+						CONFIRMED<br>
+					</div>
+						
+					
+			</div>
+			
+			
+			
+			<div class="row clearfix">
+					<div class="booking-conf-label">
+						Contact Information:
+					</div>
+					<div class="booking-conf-data">
+								<div id="payContact">			
+			<!-- <h3>Contact Information</h3> -->
+			Scott Shaw<br>Level 11<br>155 Queen Street<br>Melbourne VIC 3000<br>Australia<br><br> (Tel)0402653576<br><br>oztravel@thoughtworks.com<br>
+		</div>
+					</div>
+			</div>			
+			<div class="row clearfix">
+					<div class="booking-conf-label">
+						
+						Guest and Baggage Details
+						
+						
+						
+						
+						
+					</div>
+					<div class="booking-conf-data">
+								<div id="payPassenger">
+			<!-- VIRGIN change -->
+			<!-- <h3>Traveller</h3> -->
+			
+					
+						<p class="red"><b>Scott Shaw</b></p>				
+					
+				
+					<div class="baggage-itin">
+						<div class="header">
+							<img src="skylights.cgi_files/baggage-itin-icon.gif">
+							<label class="middle">Baggage Allowance</label>
+						</div>
+						<div class="data">
+					Departing Flight: 23 KG checked baggage<br>Returning Flight: 23 KG checked baggage
+						</div>
+					</div>
+					
+					
+					
+				
+			
+		</div>
+					</div>
+			</div>
+			
+			<div class="row clearfix">
+					<div class="booking-conf-label">
+						To change your booking...
+					</div>
+					<div class="booking-conf-data">
+						Did you know you can <a href="https://bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi?module=C3&amp;page=PNR_LOOKUP" target="_blank">change your booking online</a>? You can also telephone our <a href="http://www.virginblue.com.au/ContactUs/index.htm" target="_blank">Guest Contact Center</a>. You can change/cancel your booking according to your <a href="#fare_rules">Fare Rules</a>. 
+					</div>
+			</div>	
+		</div>
+	</div><!-- end .box-body -->
+	</div><!-- end .box -->
+<div class="box-bot">&nbsp;</div>
+
+
+<input name="serviceBookingId" value="" type="hidden">
+<div class="box">
+	<div class="box-title"><h2 class="sIFR-replaced"><embed style="width: 653px; height: 22px;" class="sIFR-flash" type="application/x-shockwave-flash" sifr="true" bgcolor="transparent" wmode="transparent" flashvars="txt=Your Itinerary&amp;textcolor=#cc0000&amp;w=653&amp;h=22" quality="best" src="skylights.cgi_files/crille_sifr.swf" width="653" height="22"><span class="sIFR-alternate">Your Itinerary</span></h2></div>
+	<div class="box-body">
+				
+
+<!-- 
+<div class="itin-head clearfix">
+	
+	<h3 class="table-title">
+		<img id="flight-logo" src="../images/flight-departing-logo.gif" border="0">
+		<label class="middle">Departing Flight - Sydney to Brisbane - Wed 24 Sep</label>
+	</h3>
+-->
+
+<div class="table-outer itin-head clearfix" style="margin-bottom: 0px;">
+	
+	<div class="table-title">
+		<img id="flight-logo" src="skylights.cgi_files/flight-departing-logo.gif" border="0">
+		<label class="middle">Departing Flight - Sydney to Brisbane - Wed 24 Sep</label>
+	</div>
+
+	
+		<div class="fare-quote">All fares quoted in $AUD&nbsp;</div>
+	
+	
+	<!--
+	       <a href="/apps/skylights/booking_reminder.php?orig=SYD&dest=BNE&pnr=VIUNCD&departdate=20080924:2030&warntime=20080924T2015 "><img id="outlookreminder" src="../images/SB/btn_outlook_reminder.gif" border="0"></a>
+	-->
+	
+			</div>
+			<div class="table-outer clearfix">
+
+	<table class="table table-itin" cellpadding="0" cellspacing="0">
+         <tbody><tr class="single-row">
+             <th class="departing"><span>Departing</span></th>
+             <th class="arrival"><span>Arrival</span></th>
+             <th class="flightno"><span>Flight</span></th>
+             <th class="faretype"><span>Fare Type</span></th>
+              <th class="paxprice"><span>Passenger Prices</span></th>
+          </tr>
+		  <tr>
+		 <td>
+					  	 
+						<span><strong>	20:30</strong></span>
+						<span>Sydney</span>
+						<br>
+						<span>24-Sep-08</span>
+						<br>Operated by:<br>
+						
+			</td>
+			<td>
+						 
+						<span><strong>	21:55</strong></span>
+						<span>Brisbane</span>
+						<br>
+						<span>24-Sep-08</span>
+						<br>Virgin Blue<br>
+
+						
+			</td>
+			
+			<td class="flightno">			
+				
+					<span>DJ 273</span><br>
+				
+			</td>
+			 <td class="faretype highlight" rowspan="1">
+			 	
+
+					<a href="javascript:showFareRuleAlertCustom('T195',%20'Blue%20Saver')" onmouseover=" window.status='Click to see fare details: Blue Saver'; return true">Blue Saver</a>		
+
+			 	
+			</td>
+			 <td class="paxprice" rowspan="1">
+			 
+				1 Adult @ <span>$180.00</span><br>			 </td>
+			 </tr>
+			 <!-- FIX FOR BLUE ZONE
+			 </table>
+			 <table cellpadding="0" cellspacing="0" class="table table-recap">
+			 -->
+      
+	    <tr class="">
+		<td class="right" colspan="4">
+		<strong>
+					<a href="javascript:taxBreakdown(%20'',%20'',%20'%20$56.36%20AUD'%20,%20'%20$12.36%20AUD',%20'GST%20on%20Fare',%20'%20$18.18%20AUD',%20'Airport%20Charges',%20'%20$21.82%20AUD',%20'Fuel%20Surcharge',%20'%20$4.00%20AUD',%20'GST%20on%20Charges'%20)" onmouseover="window.status = 'Here is a breakdown of the taxes and \nfees that apply to your purchase.'; return true;">
+				Taxes</a>
+		</strong></td>		
+		<td class="right"><em>$56.36</em></td>
+		</tr>
+	
+		<tr class="last">
+				
+		<td class="right" colspan="4">
+			
+			<img style="vertical-align: middle; float: left; margin-right: 10px;" src="skylights.cgi_files/calendar.gif" alt="Calendar" id="outlookreminder" width="16" height="15">
+			<a style="float: left;" href="https://bookings.virginblue.com.au/apps/skylights/booking_reminder.php?orig=SYD&amp;dest=BNE&amp;pnr=VIUNCD&amp;departdate=20080924:2030&amp;warntime=20080924T2015">Set Reminder in Outlook</a>
+			
+		<strong>Departing Flight Total</strong></td>
+		<td class="right"><em>$180.00</em></td>
+		</tr>
+		</tbody></table>
+		
+		</div> <!-- end .table-outter -->
+
+
+
+
+
+
+
+				
+
+<!-- 
+<div class="itin-head clearfix">
+	
+	<h3 class="table-title">
+		<img id="flight-logo" src="../images/flight-returning-logo.gif" border="0">
+		<label class="middle">Returning Flight - Brisbane to Sydney - Thu 25 Sep</label>
+	</h3>
+-->
+
+<div class="table-outer itin-head clearfix" style="margin-bottom: 0px;">
+	
+	<div class="table-title">
+		<img id="flight-logo" src="skylights.cgi_files/flight-returning-logo.gif" border="0">
+		<label class="middle">Returning Flight - Brisbane to Sydney - Thu 25 Sep</label>
+	</div>
+
+	
+	
+	<!--
+	       <a href="/apps/skylights/booking_reminder.php?orig=BNE&dest=SYD&pnr=VIUNCD&departdate=20080925:1500&warntime=20080925T1445 "><img id="outlookreminder" src="../images/SB/btn_outlook_reminder.gif" border="0"></a>
+	-->
+	
+			</div>
+			<div class="table-outer clearfix">
+
+	<table class="table table-itin" cellpadding="0" cellspacing="0">
+         <tbody><tr class="single-row">
+             <th class="departing"><span>Departing</span></th>
+             <th class="arrival"><span>Arrival</span></th>
+             <th class="flightno"><span>Flight</span></th>
+             <th class="faretype"><span>Fare Type</span></th>
+              <th class="paxprice"><span>Passenger Prices</span></th>
+          </tr>
+		  <tr>
+		 <td>
+					  	 
+						<span><strong>	15:00</strong></span>
+						<span>Brisbane</span>
+						<br>
+						<span>25-Sep-08</span>
+						<br>Operated by:<br>
+						
+			</td>
+			<td>
+						 
+						<span><strong>	16:30</strong></span>
+						<span>Sydney</span>
+						<br>
+						<span>25-Sep-08</span>
+						<br>Virgin Blue<br>
+
+						
+			</td>
+			
+			<td class="flightno">			
+				
+					<span>DJ 242</span><br>
+				
+			</td>
+			 <td class="faretype highlight" rowspan="1">
+			 	
+
+					<a href="javascript:showFareRuleAlertCustom('R120',%20'Blue%20Saver%20Promo')" onmouseover=" window.status='Click to see fare details: Blue Saver Promo'; return true">Blue Saver Promo</a>		
+
+			 	
+			</td>
+			 <td class="paxprice" rowspan="1">
+			 
+				1 Adult @ <span>$105.00</span><br>			 </td>
+			 </tr>
+			 <!-- FIX FOR BLUE ZONE
+			 </table>
+			 <table cellpadding="0" cellspacing="0" class="table table-recap">
+			 -->
+      
+	    <tr class="">
+		<td class="right" colspan="4">
+		<strong>
+					<a href="javascript:taxBreakdown(%20'',%20'',%20'%20$49.55%20AUD'%20,%20'%20$5.55%20AUD',%20'GST%20on%20Fare',%20'%20$18.18%20AUD',%20'Airport%20Charges',%20'%20$21.82%20AUD',%20'Fuel%20Surcharge',%20'%20$4.00%20AUD',%20'GST%20on%20Charges'%20)" onmouseover="window.status = 'Here is a breakdown of the taxes and \nfees that apply to your purchase.'; return true;">
+				Taxes</a>
+		</strong></td>		
+		<td class="right"><em>$49.55</em></td>
+		</tr>
+	
+		<tr class="last">
+				
+		<td class="right" colspan="4">
+			
+			<img style="vertical-align: middle; float: left; margin-right: 10px;" src="skylights.cgi_files/calendar.gif" alt="Calendar" id="outlookreminder" width="16" height="15">
+			<a style="float: left;" href="https://bookings.virginblue.com.au/apps/skylights/booking_reminder.php?orig=BNE&amp;dest=SYD&amp;pnr=VIUNCD&amp;departdate=20080925:1500&amp;warntime=20080925T1445">Set Reminder in Outlook</a>
+			
+		<strong>Returning Flight Total</strong></td>
+		<td class="right"><em>$105.00</em></td>
+		</tr>
+		</tbody></table>
+		
+		</div> <!-- end .table-outter -->
+
+
+
+
+
+
+
+	
+<div class="table-outer">
+	<table class="table table-total" cellpadding="0" cellspacing="0">
+		<tbody><tr>
+			<td rowspan="2" class="t-left">
+				<img id="flight-logo" src="skylights.cgi_files/total-price-logo.gif" style="float: left;" border="0">
+				
+				<label>Total Flights (including taxes)</label>
+			</td>
+			<td class="total">				
+				<em id="flight-total-price">$285.00</em>
+			</td>
+		</tr>
+	</tbody></table>
+</div>
+
+		
+		
+		<div class="table-outer">			
+			<table class="table table-fee" cellpadding="0" cellspacing="0">
+	
+			<tbody><tr>
+				<td class="data-a">
+					<strong>
+						Credit Card fee
+					</strong>
+				</td>
+				<td>
+					
+				</td>
+				<td class="total">
+					
+					<em> $6.00
+					
+				</em></td>
+			</tr>
+			<tr>
+				<td class="data-a">
+					<strong>
+						Checked Baggage
+					</strong>
+				</td>
+				<td>
+					
+					
+					2 x 23 KG Checked Baggage Allowance @ $8.00
+					
+				</td>
+				<td class="total">
+					
+					<em>$16.00
+					
+				</em></td>
+			</tr>
+	
+	          	</tbody></table>
+		</div>
+	
+		
+	
+	<div class="table-outer table-total-outer">
+<table class="table table-total" cellpadding="0" cellspacing="0">
+    <tbody><tr>
+	<td rowspan="2" class="t-left">
+		<img id="flight-logo" src="skylights.cgi_files/total-price-logo.gif" style="float: left;" border="0">
+		
+		<label>Total Booking Price (including taxes)</label>
+		<!-- <div style="font-size: 80%">(Price includes  taxes and charges)</div> -->
+	</td>
+        <td class="total">
+        	
+			<em id="ins-update-total">$307.00</em>
+        </td>
+    </tr>
+</tbody></table>
+</div>
+
+	
+
+	</div><!-- end .box-body -->
+</div><!-- end .box -->
+<div class="box-bot">&nbsp;</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="box" id="itinPanel">
+   <div class="box-title"><h2 class="sIFR-replaced"><embed style="width: 653px; height: 22px;" class="sIFR-flash" type="application/x-shockwave-flash" sifr="true" bgcolor="transparent" wmode="transparent" flashvars="txt=Payment and Price Summary&amp;textcolor=#cc0000&amp;w=653&amp;h=22" quality="best" src="skylights.cgi_files/crille_sifr.swf" width="653" height="22"><span class="sIFR-alternate">Payment and Price Summary</span></h2></div>
+   <div class="box-body">
+<div class="table-outter">
+<table width="100%">
+<tbody><tr>
+<td>			<div id="priceSummaryConfItin">
+				<h3>Price Summary</h3>
+				<table style="width: 90%;" class="table" id="priceSummaryTable" summary="pricing information">
+					<tbody><tr>
+						<td><strong>Blue Saver</strong></td>
+						<td>$ 123.64</td>
+						<td>AUD</td>
+					</tr>
+
+					<tr>
+						<td><strong>Blue Saver Promo</strong></td>
+						<td>$ 55.45</td>
+						<td>AUD</td>
+					</tr>
+
+					<tr>
+						<td><strong>2 23 KG Checked Baggage</strong></td>
+						<td>$ 14.54</td>
+						<td>AUD</td>
+					</tr>
+					<tr>
+						<td><strong>1 Credit Card fee</strong></td>
+						<td>$ 5.45</td>
+						<td>AUD</td>
+					</tr>
+					<tr>
+						<td><strong>Taxes</strong></td>
+						<td>$ 107.92</td>
+						<td>AUD</td>
+					</tr>
+					<tr>
+						<td><em>Total price</em> </td>
+						<td>$ 307.00</td>
+						<td>AUD</td>
+					</tr>
+				</tbody></table>		
+			</div></td>
+<td>
+				<div id="paySumConfItin">
+				<h3>Payment Summary</h3>
+				<table style="width: 100%;" class="table" id="paySumTable" summary="payment information">
+			
+				<tbody><tr>
+					<td colspan="4">3. American Express - CONFIRMED</td>
+				</tr>
+				
+				<tr>
+					<td class="DetailLabel"> XXXXXX1009 </td>
+					<td>$</td>
+					<td class="right noWrap">307.00</td>
+					<td>AUD</td>
+				</tr>
+			
+
+				<!-- FIX FOR ALIGNMENT -->
+				<tr>
+					<td>Payment amount</td>
+					<td>$</td>
+					<td class="right noWrap">307.00</td>
+					<td>AUD</td>
+				</tr>
+			
+				</tbody></table>
+			</div>
+	
+	
+	
+</td>
+</tr>
+</tbody></table>
+</div>
+		</div><!-- end .box-body -->
+</div><!-- end .box -->
+<div class="box-bot">&nbsp;</div>
+	
+			
+	
+		
+								
+		
+			
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+						
+		
+		<input name="destpage" value="" type="hidden">
+		<input name="destmodule" value="" type="hidden">
+
+
+  <div class="box" id="itinPanel">
+  <div class="box-title"><a name="fare_rules"><h2 class="sIFR-replaced"><embed style="width: 653px; height: 22px;" class="sIFR-flash" type="application/x-shockwave-flash" sifr="true" bgcolor="transparent" wmode="transparent" flashvars="txt=Fare Rules&amp;textcolor=#cc0000&amp;w=653&amp;h=22" quality="best" src="skylights.cgi_files/crille_sifr.swf" width="653" height="22"><span class="sIFR-alternate">Fare Rules</span></h2></a></div>
+	<div class="box-body">
+	<h3>Fare Rules</h3><p><strong>Going Out</strong></p><img title="Click to expand" src="skylights.cgi_files/b-plane-r-on.gif" border="0"><a href="#" onclick="showHide('fareRules1');">Blue Saver</a><div id="fareRules1" style=""><ul><li>
+The Basics - This is our discount fare. It gives you the best possible
+price, but it is not as flexible as our more expensive fares. There are
+restrictions on your ability to change or cancel the fare. The fare is
+not refundable, but you can obtain a credit for use later.</li><br><li>
+Baggage - For domestic flights this fare includes carry-on baggage
+only. If you wish to take baggage you must purchase the checked baggage
+allowance of up to 23kgs. You can pre-purchase this baggage allowance
+before you arrive at the airport either online or by calling the Guest
+Contact Centre. For each fare you buy you can pre-purchase the checked
+baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or
+$8NZD (NZ domestic) per flight. If you do not pre-purchase the baggage
+allowance before you arrive at the airport and you have baggage to
+check-in then you will be charged a fee of $20AUD (Aust domestic) or
+$20NZD (NZ domestic) at the airport for a baggage allowance of up to
+23kg per flight. The baggage fee is non refundable and non
+transferable. For domestic flights departing before 1 September 2008
+and for international flights this fare includes a free checked baggage
+allowance of up to 20kg.</li><br><li> Changes - You can change the date
+and time of your flight if you make the request at least 24hrs prior to
+your flight's scheduled departure time. Any other changes (such as name
+changes or changes to routing) are not permitted, and will be treated
+as a cancellation. If you made your original booking on our website,
+you can make changes on our website. If you did not make your original
+booking on our website, you must contact the Guest Contact Centre
+(GCC).- For Changes you make using our website (see also 'Which
+Currency', below):Domestic flights - a change fee of $35AUD (Aust
+domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare
+difference(see below). International flights - a change fee of
+$40AUD(for other currencies, see 'Currency' below). - For Changes you
+makethrough the GCC (see also 'Currency', below):Domestic flights -a
+change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest
+plus any applicable fare difference (see below). Internationalflights -
+a change fee of $50AUD (for other currencies, see 'Currency'below). -
+Fare Difference - Your new fare will be at least the price of the
+original fare and may be more. You must pay this fare difference when
+you change your booking. GCC fares are at least $15AUD/$15NZD more than
+internet fares.</li><br><li> Cancellations - You can cancel your flight
+if you make the request at least 24hrs prior to your flight's scheduled
+departure time. You can use the same methods as for making changes. See
+above.- For Cancellations you make using our website - a cancellation
+fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for
+domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for
+international flights. - For Cancellations you make through the GCC - a
+cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per
+Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per
+Guest for international flights.</li><br><li> Giving credit -
+Regardless of your initial form of payment(including velocity points),
+if you cancel your flights in accordance with these rules, any balance
+will be held in credit for use within 12 months from the date you
+purchased the flight. All future bookings utilising your credit, can
+only be made via the GCC and at applicable GCC fare levels. GCC fares
+are at least $15AUD/$15NZD more than internet fares. You may not cancel
+a payment of any fee for the checked baggage allowance unless you
+cancel your fare at the same time.</li><br><li> No show/Late
+cancellation - If you do not fly and do not notify us at least 24 hours
+prior to the flight's scheduled departure time or you cancel your
+flight within 24 hours prior to the flight's scheduled departure time,
+you will forfeit any fare paid, any fees paid for checked baggage
+and/or your Velocity Points (as applicable).</li><br><li> Other
+important fare rules - This fare is non-refundable, non-transferable
+and name changes are not permitted. This fare is only applicable origin
+to destination and no enroute stopovers are permitted.</li><br><li>
+Currency - For international travel, the currency in which you made
+your original booking will apply any changes or cancellations you make.
+Please refer to the Fees and Charges tab in the Booking section of our
+website or your itinerary for applicable charges in that currency.</li><br></ul></div><p><strong>Coming Back</strong></p><img title="Click to expand" src="skylights.cgi_files/b-plane-l-on.gif" border="0"><a href="#" onclick="showHide('fareRules2');">Blue Saver Promo</a><div id="fareRules2" style=""><ul><li>
+The Basics - This is our discount fare. It gives you the best possible
+price, but it is not as flexible as our more expensive fares. There are
+restrictions on your ability to change or cancel the fare. The fare is
+not refundable, but you can obtain a credit for use later.</li><br><li>
+Baggage - For domestic flights this fare includes carry-on baggage
+only. If you wish to take baggage you must purchase the checked baggage
+allowance of up to 23kgs. You can pre-purchase this baggage allowance
+before you arrive at the airport either online or by calling the Guest
+Contact Centre. For each fare you buy you can pre-purchase the checked
+baggage allowance of up to 23 kg for a fee of $8AUD (Aust domestic) or
+$8NZD (NZ domestic) per flight. If you do not pre-purchase the baggage
+allowance before you arrive at the airport and you have baggage to
+check-in then you will be charged a fee of $20AUD (Aust domestic) or
+$20NZD (NZ domestic) at the airport for a baggage allowance of up to
+23kg per flight. The baggage fee is non refundable and non
+transferable. For domestic flights departing before 1 September 2008
+and for international flights this fare includes a free checked baggage
+allowance of up to 20kg.</li><br><li> Changes - You can change the date
+and time of your flight if you make the request at least 24hrs prior to
+your flight's scheduled departure time. Any other changes (such as name
+changes or changes to routing) are not permitted, and will be treated
+as a cancellation. If you made your original booking on our website,
+you can make changes on our website. If you did not make your original
+booking on our website, you must contact the Guest Contact Centre
+(GCC).- For Changes you make using our website (see also 'Which
+Currency', below):Domestic flights - a change fee of $35AUD (Aust
+domestic)or $35NZD(NZ domestic) per Guest plus any applicable fare
+difference(see below). International flights - a change fee of
+$40AUD(for other currencies, see 'Currency' below). - For Changes you
+makethrough the GCC (see also 'Currency', below):Domestic flights -a
+change fee of $40AUD (Aust domestic) or $40NZD(NZ domestic)per Guest
+plus any applicable fare difference (see below). Internationalflights -
+a change fee of $50AUD (for other currencies, see 'Currency'below). -
+Fare Difference - Your new fare will be at least the price of the
+original fare and may be more. You must pay this fare difference when
+you change your booking. GCC fares are at least $15AUD/$15NZD more than
+internet fares.</li><br><li> Cancellations - You can cancel your flight
+if you make the request at least 24hrs prior to your flight's scheduled
+departure time. You can use the same methods as for making changes. See
+above.- For Cancellations you make using our website - a cancellation
+fee of $40AUD(Aust domestic) or $40NZD (NZ domestic) per Guest for
+domestic flights or $50AUD/$50NZD/$50FJD/$95WST/$80TOP per Guest for
+international flights. - For Cancellations you make through the GCC - a
+cancellation fee of $45AUD (Aust domestic) or $45NZD (NZ domestic) per
+Guest for domestic flights or$60AUD/$60NZD/$60FJD/$105WST/$90TOP per
+Guest for international flights.</li><br><li> Giving credit -
+Regardless of your initial form of payment(including velocity points),
+if you cancel your flights in accordance with these rules, any balance
+will be held in credit for use within 12 months from the date you
+purchased the flight. All future bookings utilising your credit, can
+only be made via the GCC and at applicable GCC fare levels. GCC fares
+are at least $15AUD/$15NZD more than internet fares. You may not cancel
+a payment of any fee for the checked baggage allowance unless you
+cancel your fare at the same time.</li><br><li> No show/Late
+cancellation - If you do not fly and do not notify us at least 24 hours
+prior to the flight's scheduled departure time or you cancel your
+flight within 24 hours prior to the flight's scheduled departure time,
+you will forfeit any fare paid, any fees paid for checked baggage
+and/or your Velocity Points (as applicable).</li><br><li> Other
+important fare rules - This fare is non-refundable, non-transferable
+and name changes are not permitted. This fare is only applicable origin
+to destination and no enroute stopovers are permitted.</li><br><li>
+Currency - For international travel, the currency in which you made
+your original booking will apply any changes or cancellations you make.
+Please refer to the Fees and Charges tab in the Booking section of our
+website or your itinerary for applicable charges in that currency.</li><br></ul></div>
+		</div><!-- end .box-body -->
+</div><!-- end .box -->
+<div class="box-bot">&nbsp;</div>
+
+</form>
+<form name="itinerary_info">
+<input name="booking_agent" value="INET" type="hidden">
+	
+<input name="booking_date" value="20080923" type="hidden">
+	
+<input name="booking_time" value="1450" type="hidden">
+	
+<input name="contact_address1" value="Level 11" type="hidden">
+	
+<input name="contact_address2" value="155 Queen Street" type="hidden">
+	
+<input name="contact_address3" value="" type="hidden">
+	
+<input name="contact_city" value="Melbourne" type="hidden">
+	
+<input name="contact_country" value="AU" type="hidden">
+	
+<input name="contact_fax" value="" type="hidden">
+	
+<input name="contact_name" value="Shaw/Scott" type="hidden">
+	
+<input name="contact_phone" value="0402653576" type="hidden">
+	
+<input name="contact_phone_other" value="" type="hidden">
+	
+<input name="contact_state" value="" type="hidden">
+	
+<input name="contact_zip" value="3000" type="hidden">
+	
+<input name="currency_code" value="AU" type="hidden">
+	
+<input name="email" value="oztravel@thoughtworks.com" type="hidden">
+	
+<input name="info_mkt1_seg1" value="DJ||20080924| 273||SYD|BNE|2030|2155|" type="hidden">
+	
+<input name="info_mkt2_seg1" value="DJ||20080925| 242||BNE|SYD|1500|1630|" type="hidden">
+	
+<input name="language" value="EN" type="hidden">
+	
+<input name="mkt_1_fareclass" value="T195" type="hidden">
+	
+<input name="mkt_2_fareclass" value="R120" type="hidden">
+	
+<input name="mode" value="" type="hidden">
+	
+<input name="mode_name" value="" type="hidden">
+	
+<input name="mode_type" value="" type="hidden">
+	
+<input name="pax_info1" value="SHAW|SCOTT|Mr|||||" type="hidden">
+	
+<input name="pax_num" value="1" type="hidden">
+	
+<input name="pnr" value="VIUNCD" type="hidden">
+	
+<input name="ref" value="" type="hidden">
+	
+<input name="total_cost" value="307.00" type="hidden">
+	
+
+
+
+<script language="JavaScript" type="text/javascript">
+<!--
+var google_conversion_id = "1070691072";
+var google_conversion_language = "en_GB";
+var google_conversion_format = "1";
+var google_conversion_color = "FFFFFF";
+var google_conversion_value = "307.00";
+var google_conversion_label = "Purchase";
+//-->
+</script>
+<noscript>
+<img style="display: none" height=1 width=1 border=0
+src="https://www.googleadservices.com/pagead/conversion/1070691072/?value=307.00&label=Purchase&script=0">
+</noscript>
+
+<script language="JavaScript" src="skylights.cgi_files/conversion.js">
+</script><iframe name="google_conversion_frame" src="skylights.cgi_files/a.htm" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" width="300" frameborder="0" height="13">&lt;img
+height="1" width="1" border="0"
+src="https://www.googleadservices.com/pagead/conversion/1070691072/?frame=0&amp;random=1222145420976&amp;cv=1&amp;fst=1222145420976&amp;num=1&amp;fmt=1&amp;value=307.00&amp;label=Purchase&amp;bg=FFFFFF&amp;hl=en&amp;gl=GB&amp;u_h=1024&amp;u_w=1280&amp;u_ah=990&amp;u_aw=1280&amp;u_cd=32&amp;u_his=29&amp;u_tz=600&amp;u_java=true&amp;u_nplug=23&amp;u_nmime=103&amp;ref=https%3A//bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi&amp;url=https%3A//bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi%3Fsid%3DA1a56d025f6a074c2ccc123e9b9a5cdb6ce319dae3%26module%3DSB%26page%3DPAYMENT%26language%3DEN%26mode%3D%26event%3DWAIT%26referer%3Dhttps%3A//bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi%26e%3D1222145402"
+/&gt;</iframe>
+
+<script type="text/javascript">
+// <![CDATA[
+if((document.skylightsForm) && (document.skylightsForm.ref.value !='')){
+	var ref = document.skylightsForm.ref.value;
+ }else{
+   var ref= '';
+  }
+ var axel = Math.random()+"";
+ var a = axel * 10000000000000;
+ document.write('<img src="/_scripts/stats/sales.php?action=sale&price=307.00&currency=AU&origin=SYD&destination=BNE&velocity=&quantity=1&pnr=VIUNCD&fare_type=&flight_type=&rand='+ a + '?" width="1" height="1" border="0">'); 
+// ]]>
+</script><img src="skylights.cgi_files/sales.gif" width="1" border="0" height="1">
+
+					</form>
+				</div><!-- end .container-body -->
+				<div class="container-bot clearfix">
+					<ul>
+						<li>� 2000-2008 Virgin Blue Airlines Pty Ltd ABN 36 090 670 965</li>
+						<li>� 2004-2008 Pacific Blue Airlines (Aust) Pty Ltd ABN 79 097 892 389</li>
+						<li>� 2003-2008 Pacific Blue Airlines (NZ) Limited</li>
+						<li>Australian Travel Agent Licence number QLD 3214935 </li>
+					</ul>
+				</div><!-- end .container-bot -->
+	        	</div><!-- end .container-outer -->
+	         
+
+
+<div id="services">
+
+	
+		
+	<div class="service clearfix" id="service-carbon">
+		<img src="skylights.cgi_files/itin_services_head_carbon.jpg" class="service-head" alt="service-head">
+		<div class="service-inner">
+
+			<div class="center">
+				<p><a href="javascript:popUp('https://secure.virginblue.com.au/public/system/carbon/?paxLastName=Shaw&amp;pnr=VIUNCD')"><img src="skylights.cgi_files/btn_carbon_flight.gif" alt=""></a></p>
+				<p><a href="javascript:popUp('http://www.virginblue.com.au/carbonoffset/?paxLastName=Shaw&amp;pnr=VIUNCD')"><img src="skylights.cgi_files/btn_carbon_find_more.gif" alt=""></a></p>
+			</div>
+		</div>
+		<div class="service-foot">&nbsp;</div>
+	</div>
+     	
+
+	<!-- start service cars -->
+     <div class="service clearfix" id="service-cars">
+     	<img src="skylights.cgi_files/itin_services_head_cars.jpg" class="service-head" alt="service-head">
+     	<div class="service-inner">
+			<div id="europcar_container">
+				<ul id="europcar_offer"><dt><a name="searching">Searching For Car Deals</a></dt></ul>
+			</div>
+         </div>
+         <a class="service-foot action" href="http://www.deltaeuropcar.com.au/virginblue/" target="_blank">show all</a>
+     </div>
+			
+	<!-- start service hotels -->
+	<div class="service clearfix" id="service-hotels">
+	<img src="skylights.cgi_files/itin_services_head_hotels.jpg" class="service-head" alt="service-head">
+		<div class="service-inner">
+			<div id="hotel_container">
+			<dl class="prices">
+				<div id="hotel_offers"><dt><a name="searching">Searching For Hotels</a></dt></div>
+			</dl>
+			</div>
+		</div>
+		   <a class="service-foot action" href="http://b2b.ratestogo.com/enter.asp?id=3074&amp;bp=14" target="_blank">&nbsp;</a>
+	</div>
+
+<!-- FIX FOR LOUNGE TILE -->
+
+<div class="service clearfix" id="service-thelounge">
+	<img src="skylights.cgi_files/itin_services_head_thelounge.jpg" class="service-head" alt="service-head">
+	<div class="service-inner">
+		<div class="center">
+			<p><a href="http://www.virginblue.com.au/thelounge/passes/" target="_blank"><img src="skylights.cgi_files/btn_thelounge_single_entry.gif"></a></p>
+			<p><a href="http://www.virginblue.com.au/thelounge/whatsin/" target="_blank"><img src="skylights.cgi_files/btn_thelounge_find_more.gif"></a></p>
+		</div>
+	</div>
+	<div class="service-foot">&nbsp;</div>
+</div>
+
+		
+	<!-- start travel services -->
+	<div class="service clearfix" id="service-travel">
+	   	<img src="skylights.cgi_files/itin_services_head_travel.jpg" class="service-head" alt="service-head">
+	   	<div class="service-inner">
+	       	<dl id="travel-extras">
+<!--	       			 <dt><a href="https://secure.virginblue.com.au/public/system/thelounge/index.wm?passes=true" target="_blank">The Lounge - Single Entry</a></dt>
+	       			 <dd>Purchase Single Entry Pass</dd> -->
+	               <dt><a href="http://www.b-secure.com.au/" target="_blank">Travel Insurance</a></dt>
+	               <dd>Book your Travel Insurance</dd>
+	               <dt><a href="http://virginblue.godo.com.au/" target="_blank">Activities</a></dt>
+	               <dd>Tours and Activities</dd>	
+				   
+	               <div id="airtrain" style="clear: both;"></div>   
+					<script type="text/javascript">setTimeout(airtrain,3000);</script>
+					
+	               	
+					<div id="parking" style="clear: both;"></div>
+					<script type="text/javascript">setTimeout(parking,3000);</script>
+					
+	               	
+					<div id="apollo" class="servicesbg"></div>
+					<script type="text/javascript">setTimeout("apollo('BNE')",3000);</script>				
+	               
+				   	<dt><a href="http://www.bluetix.com.au/" target="_blank">Bluetix</a></dt>
+	               	<dd class="last">Concerts, Theatre and events  tickets. Have your tickets waiting for when you arrive.</dd>
+	           <dt><a href="http://www.airtrain.com.au/virgin/" target="_blank">Brisbane Airport Transfers</a></dt><dd>10% off for Virgin Blue Guests</dd><dt><a href="http://www.airportparking.net.au/virginblue/" target="_blank">Airport Parking</a></dt><dd>Sydney Airport Parking - As low as $12</dd><dt><a href="http://virginblue.apollocamper.com/" target="_blank">Campervans and Motorhomes</a></dt><dd>Book Campervans, Motorhomes or off-airport rental cars here</dd></dl>
+	           
+	       </div>
+	<div class="service-foot">&nbsp;</div>
+	</div>
+	
+<!-- start other services -->
+
+<div class="service clearfix" id="service-other">
+	<img src="skylights.cgi_files/itin_services_head_other.jpg" class="service-head" alt="service-head">
+	<div class="service-inner">
+		<dl>
+
+		<dt><a href="http://www.virginblue.com.au/thelounge/" target="_blank">Guest Lounge</a></dt>
+		<dd>The Lounge - Its new, its you</dd>
+
+
+			<dt><a href="http://www.virginblue.com.au/Personal/Specialsoffers/SaleAlerts/index.htm" target="_blank">Join V-Mail Now</a></dt>
+		<dd>Get Sale Notices Before the Rest<br>V-Mail is an e-mail subscription<br>service that is 100% FREE.<br>You will receive our sale deals<br>as they happen. You can cancel<br>at anytime - but why would you!</dd>
+		</dl>
+	</div>
+	<div class="service-foot">&nbsp;</div>
+</div>
+	
+</div> <!-- end top services div -->
+<script language="Javascript" type="text/javascript" src="skylights.cgi_files/itinerary_offers.js"></script>
+
+
+
+
+    		</div><!-- end #content -->
+	</div><!-- end wrapper -->
+
+			
+
+
+<script language="javascript1.1">
+
+var _hbEC=0,_hbE=new Array;function _hbEvent(a,b){b=_hbE[_hbEC++]=new Object();b._N=a;b._C=0;return b;}
+var hbx=_hbEvent("pv");hbx.vpc="HBX0200.01oG";hbx.gn="wss.virginblue.com.au";
+
+hbx.eacct="DM570318EMCB03EN3";
+
+hbx.pn="Itinerary - Guests";
+
+hbx.mlc="/bookings/process";
+hbx.lt="auto";
+hbx.gp="LAST";
+hbx.ci="";
+hbx.hc1="confirmed";
+hbx.hc2="";
+hbx.hc3="";
+hbx.hc4="";
+hbx.pec="";
+hbx.cacct="975703221985";
+hbx.pr="SYD-BNE_BlueSaver_T,BNE-SYD_BlueSaverPromo_R,BG23";
+hbx.bd="BlueSaver,BlueSaverPromo,Baggage";
+hbx.ca="SYD-BNE,BNE-SYD,UPSELL";
+hbx.pc="180,105,16";
+hbx.qn="1,1,2";
+hbx.st="AU";
+hbx.sp="0.00";
+hbx.sr="1";
+hbx.oi="VIUNCD1222145404";
+hbx.sy="MELBOURNE";
+hbx.sa="VIC";
+hbx.sz="3000";
+hbx.so="AU";
+hbx.pt="AX";
+hbx.sk="1ADULT,1ADULT";
+hbx.cu="DIRECT";
+hbx.ds="0";
+hbx.po="";
+hbx.c1="RETURN";
+hbx.c2="DOMESTIC";
+hbx.hcn="FlightBooking";
+
+function $gp(a){a=$d("protocol");return (a.length>0)?hbx.protocol+"://":(location.protocol=="https:"?"https://":"http://")}
+function $ii(a,b,c){ return a.indexOf(b,c?c:0)};function $is(a,b,c){return b>a.length?
+"":a.substring(b,c!=null?c:a.length)};var __r=".referrer",_hS=""+ location.search, _sv=10,_ss=_sc="u",
+_bn=navigator.appName,_bv=parseInt(navigator.appVersion),_bnN=_bn=="Netscape",_N6=(_bnN&&_bv>4)
+,_E5P=(($ii(navigator.userAgent,'MSIE 5')>-1)||($ii(navigator.userAgent,'MSIE'+
+' 6')>-1)),__f,_$r="document"+__r+"+''}",_$c="catch(_e)",_tls=""+top.location.
+search;if(!$ii(_bn,"Microsoft"))_bn="M";if(_bn=="M"&&_bv==2)_bv=3;
+function $a(v,c){return escape(($d("lc")=="y"&&typeof c!='undefined')?v.toLowerCase():v)}
+function _vc(m,l){return(m=="/")? m:(( $ii(m,"/")?"/":"")+(m.
+lastIndexOf("/")==l?$is(m,0,l):m))};function _gf( x){return $is(x,x.lastIndexOf(
+"/")+1,x.length)};function _wn(n){return(n=="PUT"+"+PAGE+NAME+HERE"||n=="CONTE"+
+"NT+C"+"ATEGORY")};function _gd(x,i){return(x==""||x=="/")?"/" :$is(x,( hbx.ctdef!=
+"full")?x.lastIndexOf("/",i-2):$ii(x,"/"),i)};function _ps(b, p){var l=location.
+pathname;if(b&&_wn(p)){return( hbx.pndef=="title" && document.title !=""&&document.
+title!=location)?document.title:_gf(l)?_gf(l):hbx.pndef}else{return(_wn(p)?_gd(l,l.
+lastIndexOf("/")):_vc(p,p.length-1 ))}};function _pm(m,h,i){return ""+(i>-1?_ps(
+h,$is(m,0,i))+";"+_pm($is(m,i+1,m.length),h,$ii($is(m,i+1,m.length),";")):_ps(h,
+m))};hbx.mlc=_pm(hbx.mlc,0,$ii(hbx.mlc,";")); hbx.pn=_pm(hbx.pn,1,$ii(hbx.pn,";"));function $d(v){
+return(typeof eval("self.hbx."+v)!="undefined")?eval("self.hbx."+v):""};function $f(a,
+b){return(!$ii(a,"?"+b+"="))?0: $ii(a,"&"+b+"=")};function $g(a,b,c,d){var e=$f(
+a,b);if(d&&e<0&&top&&self!=top){e=$f(_tls,b);if(e>-1)a=_tls};return(e>-1)?$is(a,
+e+2+b.length,($ii(a,"&",e+1)>-1)?$ii(a,"&",e+1):a.length):c};function $h(a,b,c){
+if(!a)a=c;if(_E5P||_N6){eval("try{__f=$g(_hS,'"+a+"','"+b+"',1)}"+_$c+"{}")}else
+{__f=$g(_hS,a,b,1)}return __f};function $i(a,b,c,d){__f=$is(a,$ii(a,"?"));if(b){
+if(_E5P||_N6){eval( "try{hbx.hra=$g(__f,hbx.hqsr,hbx.hra,0)}"+_$c+"{}")}else{hbx.hra=$g(__f,
+hbx.hqsr,hbx.hra,0)}};if(c&&!hbx.hra){if(_E5P||_N6){eval("try{hbx.hra=$g(_hS,hbx.hqsp,hbx.hra,1)"+
+"}"+_$c+"{}")}else{ hbx.hra=$g(_hS,hbx.hqsp,hbx.hra,1)}};if(d&&!hbx.hra)hbx.hra=d;return hbx.hra};
+hbx.cmp=$h($d("cmpn"),$d("cmp"),"CMP");hbx.gp=$h($d("gpn"),$d("gp"),"GP");hbx.dcmp=$h($d(
+"dcmpn" ), $d( "dcmp"), "DCMP");var _rf=""+eval("document"+__r);if(_E5P||_N6){eval(
+"try{_rf=top."+_$r+_$c+"{_rf="+_$r)}else{if(top.document&&parent.frames.length>1
+){ _rf=eval("document"+__r)+""}else if(top.document){_rf=eval("top.document"+__r)+""}}
+if(( _rf=="undefined")||(_rf==""))_rf="bookmark";_hrat=hbx.hra;hbx.hra="";hbx.hra=$i($is(
+_rf,$ii( _rf,"?")),$d("hqsr"), $d("hqsp"), _hrat); if(document.images)_sv=11;if(
+window.screen ){ _sv=12; _ss = screen.width+ "*"+screen.height;_sc=document.all?
+screen.colorDepth:screen.pixelDepth};var _ra=new Array();if(_ra.toSource)_sv=13;
+if(_bn=="M"&&_ra.shift)_sv=13;_rf=$a(_rf);function _ecr(x,w){_ed=(w=="*")?$ii(x,
+"*"):x.length; if($ii(x,"CP=")>-1){_be=$ii(x,"CP=")+3}else{return "null"}return(
+$is(x,_be,_ed ))};hbx.cp=_ecr(document.cookie,"*");_dt=(new Date()).getHours();_e2=
+$gp()+hbx.gn+"/HG?hc="+
+"none&hb="+hbx.eacct+"&event=true&eid=1&aid="+hbx.cacct+"&tz=AET&customerid="+$a(hbx.ci)+
+"&orderid="+ $a(hbx.oi)+"&shipcity="+$a(hbx.sy)+"&shipstate="+$a(hbx.sa)+"&shipzipcode="+
+$a(hbx.sz )+ "&shipcountry="+ $a(hbx.so)+ "&paymenttype="+$a(hbx.pt)+"&product="+$a(hbx.pr)+
+"&price="+ $a(hbx.pc)+"&quantity="+ $a(hbx.qn)+"&brand="+$a(hbx.bd)+"&category="+$a(hbx.ca)+
+"&shippingtype="+$a(hbx.st)+"&shipping="+$a((hbx.sp=="S"+"HIP+COST")?0:hbx.sp)+"&store="+
+$a((hbx.sr=="S"+"TORE")?1:hbx.sr)+"&sku="+$a(hbx.sk)+"&customer_type="+$a(hbx.cu)+"&discou"+
+"nt="+$a(( hbx.ds=="D"+"ISCOUNT")?0:hbx.ds)+"&promotion="+$a((hbx.po=="P"+"ROMOTION")?'':
+hbx.po)+ "&li_custom1="+$a(hbx.c1 )+"&li_custom2="+$a(hbx.c2)+(_bnN?("&bn="+$a(_bn)):"")+
+"&sv="+_sv+"&ss="+_ss+ "&sc="+_sc+"&dt="+_dt+"&cp="+hbx.cp+"&cmp="+hbx.cmp+"&gp="+hbx.gp+
+"&abd_type=order&n=" +$a(hbx.pn,1)+"&vcon="+$a(hbx.mlc,1)+"&seg="+hbx.seg+"&dcmp="+$a(hbx.dcmp)+
+"&fnl="+$a(hbx.fnl)+"&pec="+$a(hbx.pec)+"&cv="+$a(hbx.hcv)+"&gn="+$a(hbx.hcn)+"&ld="+$a(hbx.hlt
+)+"&la="+$a(hbx.hla)+"&c1="+$a(hbx.hc1)+"&c2="+$a(hbx.hc2)+"&c3="+$a(hbx.hc3)+"&c4="+$a(hbx.hc4
+)+"&vpc="+hbx.vpc;var _hbthreshold=2048;var _hbi=new Image();
+function $oe(a){return $gp()+"//"+hbx.gn+"/HG?hc=none&hb="+hbx.eacct+"&hec=1&ec=1&err="+$a(a);}
+_hbi.src=(_e2.length<_hbthreshold)?(_e2):($oe("Commerce Order "+$a(hbx.oi)+" request over 2k limit."))
+
+</script>
+
+
+
+</body></html>
