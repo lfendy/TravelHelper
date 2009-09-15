@@ -454,7 +454,7 @@ function Email() {
                'Melbourne 0412 932 628<br/>' +
                'Sydney  0413 333 663<br/>' +
                'Brisbane 07 3353 0644</div>' +
-               '<div><p>When travelling for ThoughtWorks you are covered by <a href="http://www.covermore.com.au">CoverMore Travel Insurance</a><br/>Account Name:ThoughtWorks Australia Pty Ltd<br/>Policy Number:5358468</p></div>'+
+               '<div><p>When travelling for ThoughtWorks you are covered by <a href="http://www.covermore.com.au">CoverMore Travel Insurance</a><br/>Account Name:ThoughtWorks Australia Pty Ltd<br/>Policy Number:5359888</p></div>'+
                '<div><p><b>Got Feedback?</b> How was your travel today? Were the timings appropriate? Did everything go smoothly?<br/>Please let Jacqui know of any feedback you have to help us provide the best travel service we can.</p></div>'
 	parentElement.appendChild(this.element); 
     }
