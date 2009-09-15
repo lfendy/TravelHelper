@@ -707,7 +707,7 @@ function VirginItineraryBuilder() {
 			return rawPhone.value.replace(/(....)(...)(...)/, '$1 $2 $3');			
 		}
 		if(rawPhone.nodeName == "DIV") {
-			return rawPhone.textContent.match(/(\d\d\d\d\d\d\d\d\d\d)/)[0];
+			return rawPhone.textContent.match(/04\d\d\d\d\d\d\d\d/)[0];
 		}
 		return "could not locate phone information";
     };
