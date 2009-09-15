@@ -91,7 +91,7 @@ function destination(city, airport, terminal, address) {
 }
 
 function lookupDestination(dest) {
-	this.Melbourne = new destination('Melbourne', 'Melbourne Domestic Airport', 'TERMINAL 1', 'Melbourne Domestic Airport');
+	this.Melbourne = new destination('Melbourne', 'Melbourne Domestic Airport', 'TERMINAL 1', 'Melbourne Airport VIC');
 	this['Melbourne (Tullamarine)'] = this.Melbourne;
 	this.Sydney = new destination('Sydney', 'Sydney Domestic Airport', 'TERMINAL 3', 'Sydney Domestic Airport');
 	this.Brisbane = new destination('Brisbane', 'Brisbane Domestic Airport', 'TERMINAL ?????', 'Brisbane Domestic Airport');
@@ -802,6 +802,8 @@ function queryGoogleSpreadsheet(spreadsheetKey, gridId, callbackFunctionName) {
 function queryGoogleMap(origin, destination, successCallback, errorCallback) {
 var fullOrigin = origin.replace(' ','+') + ',Australia';
 var fullDest = destination.replace(' ','+') + ',Australia';
+console.log('full origin ' + fullOrigin);
+console.log('full dest ' + fullDest);
 GM_xmlhttpRequest({
         method: 'GET',
         url: 'http://maps.google.com/maps?f=d&hl=en&geocode=&time=&date=&ttype=&saddr=' + fullOrigin + '&daddr=' + fullDest,
@@ -812,7 +814,8 @@ GM_xmlhttpRequest({
         onload: function(responseDetails) {
             var tempDivForXpath = document.createElement('div');
             tempDivForXpath.innerHTML = responseDetails.responseText; // contains the full html of a page
-            var output = scrapeFirst(".//td[@class = \'timedist ul\']/div[1]/div", tempDivForXpath);
+            var output = scrapeFirst(".//div[@class = \'dditd\']/div[1]", tempDivForXpath);
+			console.log('output ' + output)
 	    if (output == null) {
                 errorCallback(this.url);
 	    }
