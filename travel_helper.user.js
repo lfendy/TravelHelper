@@ -23,7 +23,6 @@
 // 				Terminal: TERMINAL
 
 
-
 Array.prototype.reduce = function (fn, init) {
         var s = init;
         for (var i = 0; i < this.length; i++) {
@@ -180,7 +179,7 @@ function scrapeFirst(xpath, dom) {
     return first;
 }
 
-function convert12HourTo24Hour (twelveHour) {
+function convert12HourTo24Hour(twelveHour) {
     console.log('twelvehour:' + twelveHour);
     var fixed = twelveHour.replace(' am','');
     fixed = fixed.replace(' pm','');
@@ -188,7 +187,7 @@ function convert12HourTo24Hour (twelveHour) {
     fixed = fixed.replace(' PM','');
     fixed = fixed.replace(':','');
     fixed = fixed.replace(' ','');
-    console.log('fixed now:' + fixed);
+  console.log('fixed now:' + fixed);
     if (fixed.length == 3) {
        fixed = "0" + fixed;
        console.log('and now:' + fixed);
@@ -535,17 +534,16 @@ function Map() {
 	document.body.insertBefore(this.element, document.body.firstChild); 
     }
 }
-// qantas stuff
+
+// ===== qantas stuff =======================================================================================
+
 function QantasConfirmationBuilder() {
     this.pageTitle = 'Flight Bookings - Confirmation';
     this.isBuildable = function () {
         try {
-//		if (scrapeText("id('copyright')", document).search('Qantas') >= 0) {
-//        if (containsText('Qantas flight', document)) {
 			if (trim(scrapeText('//head/title', document)) == this.pageTitle) {
 				return true;
 			}
-//		}
         } catch (ex) {}
         return false;
     };
@@ -553,7 +551,6 @@ function QantasConfirmationBuilder() {
     this.flightQuery = "id('business')/div[2]/div/table/tbody/tr/td[@class = 'checkin']/..";
     this.flightParser = function (flightnode) {
         flight = new Flight();
-        //console.log('qantas' + flightnode.innerHTML);
         flight.airline = 'Qantas Airlines';
         flight.flightno = scrapeText('./td[6]', flightnode);
         var header = scrapeText('./td[1]',flightnode).split(' ');
@@ -563,6 +560,7 @@ function QantasConfirmationBuilder() {
 		flight.bookingDate = new Date().toUTCString().substring(0,12) + new Date().toUTCString().substring(14,16);
         return flight;
     };
+
     this.flightPointQuery = './td[position() = 2 or position() = 4]';
     this.flightPointParser = function (flightpointnode) {
                 fp = new FlightPoint();
@@ -588,8 +586,8 @@ function QantasConfirmationBuilder() {
     this.parsePhone = function () {
          var phone = scrapeText("id('business')/div[1]/div/div[2]/table/tbody/tr[3]/td[2]", document);
 	 	 return phone;
-         // return phone.split(' ').filter(function (word, index) {return index > 1;}).join(' ');
     }
+
     // build link for booking reference web page
     this.parseExtra = function() {
         var reference = this.parseBookingRef(); 
@@ -648,9 +646,11 @@ function QantasManageBuilder() {
         };
 }
 
-// virgin stuff
+// =======  virgin stuff ==============================================================================
+
 function VirginPaymentBuilder() {
     this.isBuildable = function () {
+  cosole.log ('VirginPaymentBuilder');
         try {
             if (scrapeText("id('content')/div/div[3]/ul/li[1]", document).search('.*Virgin.*') >= 0) {
                 if (scrapeFirst("//body", document).id == 'payment') {
@@ -664,46 +664,33 @@ function VirginPaymentBuilder() {
         }
     };
 
-    //this.flightQuery = "//div[./table/tbody/tr/th[1]/span='Departing']";
     this.flightQuery = "//div/fieldset[./legend='Departing Flight' or ./legend='Return Flight']";
     this.flightParser = function (element) {
         var flight = new Flight();
         flight.airline = 'Virgin Airlines';
-       // flight.flightno = scrapeText('./table/tbody/tr[2]/td[3]/span', element).replace(' ','');
-       // flight.price = scrapeText('./table/tbody/tr[2]/td[5]/span', element).substring(1);
         flight.flightno = scrapeText('./table/tbody/tr[2]/td[1]', element).replace(' ','');
 	console.log('flight:' + flight.flightno);
-	flight.price = scrapeText('./table/tbody/tr[2]/td[5]/strong', element).substring(1);
-	console.log('price:' + flight.price);
 
-        //var header = scrapeText('preceding::*[2]',element).split(' ');
-        //var ddd = header[header.length - 3];
-       // flight.dayofweek = convertDddToDayOfWeek(ddd);
-      
-	//flight.bookingDate = scrapeText("//div['@id=itinInfoPanel']//div[@class='booking-conf-data' and position()=2]",element);
+// ToDo: might not be important any more (anita 15.04.2011, will ffixed nowind out next week hopefully)    
+//        flight.price = scrapeText('./table/tbody/tr[2]/td[5]/strong', element).substring(1);
+//	console.log('price:' + flight.price);
+
+
         flight.bookingDate = scrapeText('./table/tbody/tr[1]/td[1]', element).replace(' ','');
         var date = new Date(Date.parse(flight.bookingDate));
         flight.dayofweek = convertDayNumberToName(date.getDay());
-        console.log('date:' +  flight.bookingDate);
+     console.log('date:' +  flight.bookingDate);
         return flight;
     };
 
-    //this.flightPointQuery = './table/tbody/tr/td[position() = 1 or position() = 2]/span/..';
     this.flightPointQuery = './table/tbody/tr[2]/td[position() = 2 or position() = 3]';
     this.flightPointParser = function (element) {
         fp = new FlightPoint();
-       // fp.name = (element.cellIndex == 0) ? 'Depart' : 'Arrive';
         fp.name = (element.cellIndex == 1) ? 'Depart' : 'Arrive';
-       // fp.dest = lookupDestination(scrapeText('./span[2]', element));
-       fp.dest = lookupDestination(scrapeText('./text()', element).replace('\n','').replace(' ','').replace(/\u00a0/g,''));
-       //var rawtime = scrapeText('./span[1]/strong', element);
-       var rawtime = scrapeText('./span', element);
+        fp.dest = lookupDestination(scrapeText('./text()', element).replace('\n','').replace(' ','').replace(/\u00a0/g,''));
+        var rawtime = scrapeText('./span', element);
         fp.time = convert12HourTo24Hour(rawtime);
         fp.date = null; //filled in later - yech
-       // fp.date = convertDdMmmYyToDdMonthYy(scrapeText('./span[3]', element), '-');
-      //fp.date = convertDdMmmYyToDdMonthYy(scrapeText('./span[3]', element), '-');
-	//console.log('time:' + fp.time);
-	//console.log('date:' + fp.date + 'raw:' + scrapeText('./span[3]', element));
         return fp;
     };
 
@@ -721,11 +708,10 @@ function VirginPaymentBuilder() {
 
 function VirginItineraryBuilder() {
     this.isBuildable = function () {
- console.log('what is it?');
+ console.log('what is it?-VirginItineraryBuilder');
         try {
             if (containsText('Virgin Blue Airlines', document)) {
- console.log('its virgin');
-                if (containsText('Booking information') || containsText('Booking confirmation')) {
+                if (containsText('Your booking')) {
  console.log('its booking');
                     return true;
                 }
@@ -736,53 +722,48 @@ function VirginItineraryBuilder() {
             return false;
         }
     };
+    
     this.virginPaymentBuilder = new VirginPaymentBuilder();
     this.flightQuery = this.virginPaymentBuilder.flightQuery;
     this.flightParser = function (element) {
         var flight = this.virginPaymentBuilder.flightParser(element);
-    //    var header = scrapeText("preceding-sibling::div[position()=1]//label[@class='middle']",element).split(' ');
-    //    var ddd = header[header.length - 3];
-    //    flight.dayofweek = convertDddToDayOfWeek(ddd);
-    //    flight.dayofweek = 'ZZZ';
         return flight;
     };
+
     this.flightPointQuery = this.virginPaymentBuilder.flightPointQuery;
     this.flightPointParser = this.virginPaymentBuilder.flightPointParser;
     this.parseBookingRef = function () {
-	//return scrapeText("//div//*[preceding-sibling::div[ @class='booking-conf-label' and (contains(.,'Reservation') or contains(.,'Confirmation Number'))]]", document);
-	return scrapeText("id('BookingConfirmationMain')/table/tbody/tr[1]/td[2]/div", document);
+        var bookingRefNumber = scrapeText("id('CheckingInMain')/table/tbody/tr[1]/td[2]", document);
+      console.log( "refnumber " + bookingRefNumber );
+        return bookingRefNumber;
     };
-    console.log("booking ref", this.parseBookingRef); 
+    
+  console.log("booking ref", this.parseBookingRef); 
+    
     this.parseName = function () {
-        //return scrapeText("id('payPassenger')/p", document);
         return scrapeText("id('ItineraryGuestBaggageMain')/table/tbody/tr[2]/td[1]", document);
-itineraryGuestBaggageNameColumn
+        itineraryGuestBaggageNameColumn
     };
     this.parsePhone = function () {
- //		var rawPhone = scrape("//form[@name = 'itinerary_info']/input[@name = 'contact_phone']", document)[0] || scrape("//div[@id='payContact']", document)[0];
-//		if(rawPhone.nodeName == "INPUT") {
-//			return rawPhone.value.replace(/(....)(...)(...)/, '$1 $2 $3');			
-//		}
-//		if(rawPhone.nodeName == "DIV") {
-//			return rawPhone.textContent.match(/04\d\d\d\d\d\d\d\d/)[0];
-//		}
-
 		var rawPhone =  scrape("id('BookingConfirmationMain')/table/tbody/tr[4]/td[3]", document)[0];
 
-    try {
-	    if(rawPhone.nodeName == "TD") {
+        try {
+	        if(rawPhone.nodeName == "TD") {
   			return rawPhone.textContent.match(/04\d\d\d\d\d\d\d\d/)[0];
   		}
 	  } catch(e) {}
 
 		return "could not locate phone information";
     };
+
 	// build link for booking reference web page
     this.parseExtra = function() {
         var link = 'https://bookings.virginblue.com.au/skylights/cgi-bin/skylights.cgi?module=C3&page=PNR_LOOKUP';
         return '<a href="' + link + '">lookup your booking on the interwebs</a><br/><br/>';
     };
 }
+
+// ===== end Virgin stuff ? ===================================================
 
 var MAX_DUMP_DEPTH = 10;
        function dumpObj(obj, name, indent, depth) {
