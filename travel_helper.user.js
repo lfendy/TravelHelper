@@ -1,27 +1,14 @@
 // ==UserScript==
-// @name           TravelHelper 06/10/10 
+// @name           TravelHelper 6 May 2011
 // @namespace      com.thoughtworks.travel
 // @description    add email friendly text to qantas and virgin flight confirmation pages.
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js
-// @include        https://book.qantas.com.au/*
+// @include        https://book.virginblue.com.au/*
 // @include        http://book.qantas.com.au/*
-// @include        https://bookings.virginblue.com.au/*
-// @include        http://*.e-travel.com/*
+// @include        https://book.qantas.com.au/*
+// @include        http://smtc.qantas.com.au/*
+// @include        https://smtc.qantas.com.au/*
 // ==/UserScript==
-
-// this script is trying to read flight confirmation web pages and create a textual representation that jacqui can copy to an email
-// Reference: YBE9HY
-// ---------------------------------------------------------------------
-// Travel Itinerary For:
-//                    Danielle McBride 
-// ---------------------------------------------------------------------
-
-// Thursday  Qantas AIRWAYS             FLIGHT QF414
-// 22 November 07 - DEPART   - MELBROURNE/MELBOURNE INTL  	0800
-//                        Terminal: TERMINAL 1
-// 22 November 07 - ARRIVE   - SYDNEY/SYDNEY KINGSFORD   	0920     
-// 				Terminal: TERMINAL
-
 
 Array.prototype.reduce = function (fn, init) {
         var s = init;
@@ -187,7 +174,7 @@ function convert12HourTo24Hour(twelveHour) {
     fixed = fixed.replace(' PM','');
     fixed = fixed.replace(':','');
     fixed = fixed.replace(' ','');
-  console.log('fixed now:' + fixed);
+console.log('fixed now:' + fixed);
     if (fixed.length == 3) {
        fixed = "0" + fixed;
        console.log('and now:' + fixed);
@@ -200,7 +187,7 @@ function convertDdMmmYyToDdMonthYy(ddMmmYy, seperator) {
     dd = tokens[0];
     month = convertMmmToMonth(tokens[1]);
     yy = tokens[2];
-    // console.log('dd:' + dd + ' mmm:' + tokens[1] + ' month:' + convertMmmToMonth(tokens[1]) + ' yy:' + tokens[2]);
+console.log('dd:' + dd + ' mmm:' + tokens[1] + ' month:' + convertMmmToMonth(tokens[1]) + ' yy:' + tokens[2]);
     return dd + ' ' + month + ' 20' + yy;
 }
 
@@ -255,6 +242,7 @@ var switchInOutDaysAway = function(event) {
 
 var refreshEmail = function() {
 	// update contact details
+console.log( 'update contact details' );
 	var mobileNo = document.getElementById('mobileNo').value;
         var emailMobileNo = document.getElementById('emailMobileNo');
 	if (mobileNo.length > 0) {
@@ -650,13 +638,14 @@ function QantasManageBuilder() {
 
 function VirginPaymentBuilder() {
     this.isBuildable = function () {
-  cosole.log ('VirginPaymentBuilder');
         try {
             if (scrapeText("id('content')/div/div[3]/ul/li[1]", document).search('.*Virgin.*') >= 0) {
                 if (scrapeFirst("//body", document).id == 'payment') {
+      console.log ('VirginPaymentBuilder - true');
                     return true;
                 }
             }
+   console.log ('VirginPaymentBuilder - false');
             return false; 
         } catch (ex) {
             console.log(ex);
@@ -708,14 +697,15 @@ function VirginPaymentBuilder() {
 
 function VirginItineraryBuilder() {
     this.isBuildable = function () {
- console.log('what is it?-VirginItineraryBuilder');
+ console.log('what is it? - VirginItineraryBuilder - 3');
         try {
-            if (containsText('Virgin Blue Airlines', document)) {
+            if (containsText('Virgin Australia', document)) {
                 if (containsText('Your booking')) {
  console.log('its booking');
                     return true;
                 }
             }
+ console.log('its not booking?');           
             return false; 
         } catch (ex) {
             console.log(ex);
