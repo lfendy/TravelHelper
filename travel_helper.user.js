@@ -32,7 +32,7 @@ function convertDddToDayOfWeek(ddd) {
     this.Sat = 'Saturday';
     this.Sun = 'Sunday';
     if (this[ddd] == null) {
-	    console.log('i dont understand the day' + ddd);
+	    console.log('Exception: i dont understand the day' + ddd);
     }
     return this[ddd];
 }
@@ -53,9 +53,9 @@ function convertMmmToMonth(mmm) {
 	this.Oct = 'October';
 	this.Nov = 'November';
 	this.Dec = 'December';
-        if (this[mmm] == null) {
-	    console.log('i dont understand the month ' + mmm);
-        }
+    if (this[mmm] == null) {
+	    console.log('Exception: i dont understand the month ' + mmm);
+    }
 	return this[mmm];
 }
 
@@ -93,10 +93,10 @@ function lookupDestination(dest) {
 	this.Canberra = new destination('Canberra', 'Canberra Airport', 'TERMINAL ?????', 'Canberra Airport');
 	this.GoldCoast = new destination('Gold Coast', 'Gold Coast Airport', 'TERMINAL ?????', 'Gold Coast Airport');
 	this['Gold Coast'] = this.GoldCoast;
-	console.log('DESTINATION: ', this[dest])
-  if (this[dest] == null) {
-      console.log('destination ' + dest + ' is not supported!');
-  }
+//	console.log('DESTINATION: ', this[dest])
+    if (this[dest] == null) {
+       console.log('Exception: destination ' + dest + ' is not supported!');
+    }
 	return this[dest];
 }
 
@@ -167,14 +167,14 @@ function scrapeFirst(xpath, dom) {
 }
 
 function convert12HourTo24Hour(twelveHour) {
-    console.log('twelvehour:' + twelveHour);
+//    console.log('twelvehour:' + twelveHour);
     var fixed = twelveHour.replace(' am','');
     fixed = fixed.replace(' pm','');
     fixed = fixed.replace(' AM','');
     fixed = fixed.replace(' PM','');
     fixed = fixed.replace(':','');
     fixed = fixed.replace(' ','');
-console.log('fixed now:' + fixed);
+//console.log('fixed now:' + fixed);
     if (fixed.length == 3) {
        fixed = "0" + fixed;
        console.log('and now:' + fixed);
@@ -187,7 +187,7 @@ function convertDdMmmYyToDdMonthYy(ddMmmYy, seperator) {
     dd = tokens[0];
     month = convertMmmToMonth(tokens[1]);
     yy = tokens[2];
-console.log('dd:' + dd + ' mmm:' + tokens[1] + ' month:' + convertMmmToMonth(tokens[1]) + ' yy:' + tokens[2]);
+//console.log('dd:' + dd + ' mmm:' + tokens[1] + ' month:' + convertMmmToMonth(tokens[1]) + ' yy:' + tokens[2]);
     return dd + ' ' + month + ' 20' + yy;
 }
 
@@ -242,7 +242,7 @@ var switchInOutDaysAway = function(event) {
 
 var refreshEmail = function() {
 	// update contact details
-console.log( 'update contact details' );
+//console.log( 'update contact details' );
 	var mobileNo = document.getElementById('mobileNo').value;
         var emailMobileNo = document.getElementById('emailMobileNo');
 	if (mobileNo.length > 0) {
@@ -256,7 +256,7 @@ console.log( 'update contact details' );
         var accommodation = scrape("//div[@id = 'accommodation']/div", document);
         accommodation.forEach(function(accommodationBooking) {
             var preview = document.getElementById('email' + accommodationBooking.id);
-            console.log('accommodationBooking:' + accommodationBooking.innerHTML);
+ //           console.log('accommodationBooking:' + accommodationBooking.innerHTML);
             var hotelInfo = scrapeFirst("./*[@name = 'hotel']", accommodationBooking).value.split('&');
             var hotelName = hotelInfo[0];
             var hotelAddress = hotelInfo[1];
@@ -294,7 +294,7 @@ console.log( 'update contact details' );
 			 
 			 preview.innerHTML = '';
 			 
-	     console.log('id: ' + car.id + ' carPreview: ' + car.innerHTML);
+//	     console.log('id: ' + car.id + ' carPreview: ' + car.innerHTML);
 		 var suburbNode = scrapeFirst("./b[@name = 'suburb'] | ./input[@name = 'suburb']", car);
 		 var suburb = suburbNode.value;
 
@@ -319,21 +319,21 @@ console.log( 'update contact details' );
 			   to += " " + suburb;
 	     }
 	     var carFlightBufferMin = scrapeFirst("../input[@name = 'buffer']", car).value;
-	     console.log('Car date: ' + car.id + 'date');
+//	     console.log('Car date: ' + car.id + 'date');
 	     var flightDate = document.getElementById(car.id + 'date').value;
        differenceMillis = 0;
        if (to.search(/Airport/) > -1) {
 	       var estimatedMin = scrapeFirst("./input[@name = 'estimate']", car).value;
 	       var estimatedMillis = new Number(estimatedMin) * 1000 * 60;
          differenceMillis = 0 - estimatedMillis - (parseInt(carFlightBufferMin) * 1000 * 60);
-         console.log('Difference: ' +differenceMillis);
-	     }
-	     console.log('Pickup time in ms: ' + parseInt(flightDate) + differenceMillis)
+       //  console.log('Difference: ' +differenceMillis);
+       }
+	//     console.log('Pickup time in ms: ' + parseInt(flightDate) + differenceMillis)
 	     var carPickUp = new Date(new Number(flightDate) + differenceMillis);
 	     var carPickUpDate = convertDateToDayDdMmmYyyy(carPickUp);
 	     var carPickUpSpreadsheetDate = convertDateToDdMmmYyyy(carPickUp);
 	     var carPickUpTime = convertDateToHhMm(carPickUp);
-	     console.log(flightDate + 'date:' + carPickUpDate);
+//	     console.log(flightDate + 'date:' + carPickUpDate);
 		 var projectCode = scrapeFirst("//input[@name='projectCode']", document).value;
 	     //scrapeText("./div[name = 'from']",preview);
 
@@ -408,7 +408,7 @@ console.log( 'update contact details' );
 
 // takes time HHMM and makes it HH:MM
 function prettyTime(time) {
-	console.log('the time is:' + time);
+//	console.log('the time is:' + time);
    return time.replace(/\s*(..)(..)\s*/, '$1:$2'); 
 };
 
@@ -641,11 +641,9 @@ function VirginPaymentBuilder() {
         try {
             if (scrapeText("id('content')/div/div[3]/ul/li[1]", document).search('.*Virgin.*') >= 0) {
                 if (scrapeFirst("//body", document).id == 'payment') {
-      console.log ('VirginPaymentBuilder - true');
                     return true;
                 }
             }
-   console.log ('VirginPaymentBuilder - false');
             return false; 
         } catch (ex) {
             console.log(ex);
@@ -658,7 +656,6 @@ function VirginPaymentBuilder() {
         var flight = new Flight();
         flight.airline = 'Virgin Airlines';
         flight.flightno = scrapeText('./table/tbody/tr[2]/td[1]', element).replace(' ','');
-	console.log('flight:' + flight.flightno);
 
 // ToDo: might not be important any more (anita 15.04.2011, will ffixed nowind out next week hopefully)    
 //        flight.price = scrapeText('./table/tbody/tr[2]/td[5]/strong', element).substring(1);
@@ -668,7 +665,7 @@ function VirginPaymentBuilder() {
         flight.bookingDate = scrapeText('./table/tbody/tr[1]/td[1]', element).replace(' ','');
         var date = new Date(Date.parse(flight.bookingDate));
         flight.dayofweek = convertDayNumberToName(date.getDay());
-     console.log('date:' +  flight.bookingDate);
+//     console.log('date:' +  flight.bookingDate);
         return flight;
     };
 
@@ -697,15 +694,12 @@ function VirginPaymentBuilder() {
 
 function VirginItineraryBuilder() {
     this.isBuildable = function () {
- console.log('what is it? - VirginItineraryBuilder - 3');
         try {
             if (containsText('Virgin Australia', document)) {
                 if (containsText('Your booking')) {
- console.log('its booking');
                     return true;
                 }
             }
- console.log('its not booking?');           
             return false; 
         } catch (ex) {
             console.log(ex);
@@ -724,12 +718,10 @@ function VirginItineraryBuilder() {
     this.flightPointParser = this.virginPaymentBuilder.flightPointParser;
     this.parseBookingRef = function () {
         var bookingRefNumber = scrapeText("id('CheckingInMain')/table/tbody/tr[1]/td[2]", document);
-      console.log( "refnumber " + bookingRefNumber );
         return bookingRefNumber;
     };
     
-  console.log("booking ref", this.parseBookingRef); 
-    
+   
     this.parseName = function () {
         return scrapeText("id('ItineraryGuestBaggageMain')/table/tbody/tr[2]/td[1]", document);
         itineraryGuestBaggageNameColumn
@@ -739,9 +731,9 @@ function VirginItineraryBuilder() {
 
         try {
 	        if(rawPhone.nodeName == "TD") {
-  			return rawPhone.textContent.match(/04\d\d\d\d\d\d\d\d/)[0];
-  		}
-	  } catch(e) {}
+    			return rawPhone.textContent.match(/04\d\d\d\d\d\d\d\d/)[0];
+     		}
+	    } catch(ex) {console.log(ex);}
 
 		return "could not locate phone information";
     };
@@ -795,7 +787,7 @@ function handleGoogleSpreadsheetResult(result) {
     var cells = result.feed.entry;
     for (var i = 4; i < cells.length; i = i + 4) {
         row = [cells[i].content.$t,cells[i+1].content.$t,cells[i+2].content.$t,cells[i+3].content.$t];
-	console.log('city:' + row[0]);
+//	console.log('city:' + row[0]);
         if (hotels[row[0]] == null) {
               hotels[row[0]] = '';
 	}
@@ -911,7 +903,7 @@ function buildDate(flightPoint) {
     var month_as_number = months.indexOf(components[1]) + 1;
     date = components[0] + '/' + month_as_number + '/' + components[2];
   }
-  console.log('BUILD DATE: ' + date);
+  //console.log('BUILD DATE: ' + date);
   var au_date = date.split('/');
   var us_date = au_date[1] + '/' + au_date[0] + '/' + au_date[2];
   return Date.parse(us_date + ' ' + prettyTime(flightPoint.time));
@@ -921,7 +913,7 @@ var carIdCounter = 1;
 function Estimate(flightPoint) {
     this.id = 'c' + carIdCounter++;
     this.flightDate = buildDate(flightPoint);
-    console.log('Car ' + this.id + ' flightDate: ' + this.flightDate )
+    //console.log('Car ' + this.id + ' flightDate: ' + this.flightDate )
     if (flightPoint.name == "Depart" || flightPoint.name == "Arrive") {
         this.flightPoint = flightPoint;
         this.flightPointAddress = flightPoint.dest.address;
@@ -1000,10 +992,10 @@ function Cars(flights) {
 	cities = new Object();
         this.estimates.forEach(function (estimate) {
             estimate.display(div);
-	    console.log('estimate' + estimate.flightPoint.dest.city);
-	    console.log('link' + cityToCarLink[estimate.flightPoint.dest.city]);
+	    //console.log('estimate' + estimate.flightPoint.dest.city);
+	    //console.log('link' + cityToCarLink[estimate.flightPoint.dest.city]);
 	    cities[estimate.flightPoint.dest.city] = cityToCarLink[estimate.flightPoint.dest.city];
-	    console.log('cities' + cities.length);
+	    //console.log('cities' + cities.length);
         });
         div.innerHTML += 'all cars before flights should arrive <input name="buffer" size="2" value="45"/> minutes early to airports<br/>';
 	// add city placeholders for the data we'll get from google spreadsheets
@@ -1072,12 +1064,12 @@ function ItineraryFactory (builders) {
 	        var compatibleBuilders = this.builders.filter(function (builder) { return builder.isBuildable();});
         	var builder = compatibleBuilders[0];
 	        if (compatibleBuilders.length == 0) {
-	            console.log("i don't understand this page.");
+//	            console.log("i don't understand this page.");
 	            return;
 	        }
 		var rawFlights = scrape(builder.flightQuery, document);
 		if (rawFlights.length == 0) {
-			console.log("i didn't find any flights on this page with the query: " + builder.flightQuery);
+//			console.log("i didn't find any flights on this page with the query: " + builder.flightQuery);
 		}
 	        var flights = scrape(builder.flightQuery, document).map(
 	            function (element) {
@@ -1226,9 +1218,9 @@ function isNoResults(queryResultText) {
 function convertToGSDate(dateString) {
   var tokens = dateString.split(' ');
   if(tokens.length!=3){
-	  console.log("Bad date format: " + dateString + ", expected format: Day Month year." );
+//	  console.log("Bad date format: " + dateString + ", expected format: Day Month year." );
 	  if(dateString.split('/').length==3){
-		  console.log("returning " + dateString);
+//		  console.log("returning " + dateString);
 		  return dateString;
 	  } 
   }
@@ -1256,23 +1248,24 @@ function convertToGSDate(dateString) {
 //If it doesn't exist it inserts it
 function insertRowIntoSpreadSheetIfNotExists(rawRowData, callbackFunction) {
 
-var urlQuery = 'http://spreadsheets.google.com/feeds/list/' + spreadsheetRecordKey + '/1/private/full?sq=';
-urlQuery += 'name%3D';
-urlQuery += '"' + rawRowData[0].innerHTML.replace("&nbsp;"," ") + '"';
-urlQuery += '%20and%20to%3D';
-urlQuery += '"' + rawRowData[1].innerHTML + '"';
-urlQuery += '%20and%20from%3D';
-urlQuery += '"' + rawRowData[2].innerHTML + '"';
-var dateString = convertToGSDate(rawRowData[3].innerHTML);
-console.log('before: ' + rawRowData[3].innerHTML + ' , after: ' + dateString);
-urlQuery += '%20and%20date%3D';
-urlQuery += '"' + dateString  + '"';
-urlQuery += '%20and%20depart%3D';
-var departString = '"' + rawRowData[4].innerHTML + ':00' + '"';
-if(departString.charAt(1) == '0')
-  departString = '"' + departString.substring(2);
-urlQuery += departString;
-console.log('urlQuery: ' + urlQuery);
+    var urlQuery = 'http://spreadsheets.google.com/feeds/list/' + spreadsheetRecordKey + '/1/private/full?sq=';
+        urlQuery += 'name%3D';
+        urlQuery += '"' + rawRowData[0].innerHTML.replace("&nbsp;"," ") + '"';
+        urlQuery += '%20and%20to%3D';
+        urlQuery += '"' + rawRowData[1].innerHTML + '"';
+        urlQuery += '%20and%20from%3D';
+        urlQuery += '"' + rawRowData[2].innerHTML + '"';
+    var dateString = convertToGSDate(rawRowData[3].innerHTML);
+    //console.log('before: ' + rawRowData[3].innerHTML + ' , after: ' + dateString);
+        urlQuery += '%20and%20date%3D';
+        urlQuery += '"' + dateString  + '"';
+        urlQuery += '%20and%20depart%3D';
+    var departString = '"' + rawRowData[4].innerHTML + ':00' + '"';
+    if(departString.charAt(1) == '0')
+        departString = '"' + departString.substring(2);
+    
+    urlQuery += departString;
+    //console.log('urlQuery: ' + urlQuery);
     GM_xmlhttpRequest({
         method: 'GET',
 		url: urlQuery,
@@ -1319,57 +1312,57 @@ function createRowInsertStringForTravel(cells) {
 }
 
 function insertTravelTableIntoGS() {
-  var progressElement = document.createElement('p');
-  progressElement.innerHTML = 'Parsing table... to spreadsheet: <a href="http://spreadsheets.google.com/ccc?key=' + spreadsheetRecordKey + '&hl=en#"> Travel Spreadsheet</a>'; 
-  document.getElementById('spreadsheet').appendChild(progressElement);
-  
-  var errorElement = document.createElement('p');
-  errorElement.innerHTML = '';
-  document.getElementById('spreadsheet').appendChild(errorElement);
+      var progressElement = document.createElement('p');
+      progressElement.innerHTML = 'Parsing table... to spreadsheet: <a href="http://spreadsheets.google.com/ccc?key=' + spreadsheetRecordKey + '&hl=en#"> Travel Spreadsheet</a>'; 
+      document.getElementById('spreadsheet').appendChild(progressElement);
+      
+      var errorElement = document.createElement('p');
+      errorElement.innerHTML = '';
+      document.getElementById('spreadsheet').appendChild(errorElement);
 
-  var table = document.getElementById('spreadsheetTable');
-  for(row in table.rows) {
-    if(row == "length" || table.rows[row].cells[0].innerHTML == "Name") continue;
-    var cells = table.rows[row].cells;
-	
-	progressElement.innerHTML = 'Parsing row ' + row + ' for travel table'; 
-	insertRowIntoSpreadSheetIfNotExists(cells, 
-		function(status){ errorElement.innerHTML = status + ' Error while interacting with travel spreadsheet. Before you freakout make sure you are logged into a google account that has access to the <a href="http://spreadsheets.google.com/ccc?key=' + spreadsheetRecordKey + '&hl=en#"> Travel Spreadsheet</a>';
-			errorElement.style.color = 'red';
-			progressElement.style.visibility = 'hidden';
-			}
-		);
-  }
-  
-  progressElement.innerHTML = 'Completed parsing table to spreadsheet: <a href="http://spreadsheets.google.com/ccc?key=' + spreadsheetRecordKey + '&hl=en#">Travel Spreadsheet</a>';
+      var table = document.getElementById('spreadsheetTable');
+      for(row in table.rows) {
+        if(row == "length" || table.rows[row].cells[0].innerHTML == "Name") continue;
+        var cells = table.rows[row].cells;
+        
+        progressElement.innerHTML = 'Parsing row ' + row + ' for travel table'; 
+        insertRowIntoSpreadSheetIfNotExists(cells, 
+            function(status){ errorElement.innerHTML = status + ' Error while interacting with travel spreadsheet. Before you freakout make sure you are logged into a google account that has access to the <a href="http://spreadsheets.google.com/ccc?key=' + spreadsheetRecordKey + '&hl=en#"> Travel Spreadsheet</a>';
+                errorElement.style.color = 'red';
+                progressElement.style.visibility = 'hidden';
+                }
+            );
+      }
+      
+      progressElement.innerHTML = 'Completed parsing table to spreadsheet: <a href="http://spreadsheets.google.com/ccc?key=' + spreadsheetRecordKey + '&hl=en#">Travel Spreadsheet</a>';
 
-  insertFlightTableIntoGS();
+      insertFlightTableIntoGS();
 }
 
 //Queries for row that matches rowData (6 elements) so we can check if it exists
 //If it doesn't exist it inserts it
 function insertRowIntoFlightSpreadSheetIfNotExists(rawRowData, callbackFunction) {
 
-var urlQuery = 'http://spreadsheets.google.com/feeds/list/' + flightSpreadsheetRecordKey + '/1/private/full?sq=';
-urlQuery += 'traveldate%3D';
-var dateString = convertToGSDate(rawRowData[0].innerHTML);
-urlQuery += '"' + dateString + '"';
-urlQuery += '%20and%20name%3D';
-urlQuery += '"' + rawRowData[1].innerHTML.replace("&nbsp;"," ") + '"';
-urlQuery += '%20and%20from%3D';
-urlQuery += '"' + rawRowData[2].innerHTML + '"';
-urlQuery += '%20and%20to%3D';
-urlQuery += '"' + rawRowData[3].innerHTML  + '"';  
-/*urlQuery += '%20and%20booked%3D';
-dateString = convertToGSDate(convertdayddMmmyyToddMyyyy(rawRowData[4].innerHTML));
-urlQuery += '"' + dateString + '"'; */ // Don't compare booked date as it is not a reliable indicator given that QANTAS bookings don't display this information so we assume current date
-var price = rawRowData[5].innerHTML;
-if(-1 != price.indexOf('.')) {
-  price = price.substring(0, price.indexOf('.'));
-}
-urlQuery += '%20and%20price%3D';
-urlQuery += '"' + price  + '"';
-console.log("Inserting into Flight spreadsheet query: " + urlQuery);
+    var urlQuery = 'http://spreadsheets.google.com/feeds/list/' + flightSpreadsheetRecordKey + '/1/private/full?sq=';
+    urlQuery += 'traveldate%3D';
+    var dateString = convertToGSDate(rawRowData[0].innerHTML);
+    urlQuery += '"' + dateString + '"';
+    urlQuery += '%20and%20name%3D';
+    urlQuery += '"' + rawRowData[1].innerHTML.replace("&nbsp;"," ") + '"';
+    urlQuery += '%20and%20from%3D';
+    urlQuery += '"' + rawRowData[2].innerHTML + '"';
+    urlQuery += '%20and%20to%3D';
+    urlQuery += '"' + rawRowData[3].innerHTML  + '"';  
+    /*urlQuery += '%20and%20booked%3D';
+    dateString = convertToGSDate(convertdayddMmmyyToddMyyyy(rawRowData[4].innerHTML));
+    urlQuery += '"' + dateString + '"'; */ // Don't compare booked date as it is not a reliable indicator given that QANTAS bookings don't display this information so we assume current date
+    var price = rawRowData[5].innerHTML;
+    if(-1 != price.indexOf('.')) {
+      price = price.substring(0, price.indexOf('.'));
+    }
+    urlQuery += '%20and%20price%3D';
+    urlQuery += '"' + price  + '"';
+  //  console.log("Inserting into Flight spreadsheet query: " + urlQuery);
     GM_xmlhttpRequest({
         method: 'GET',
 		url: urlQuery,
